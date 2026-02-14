@@ -4,6 +4,9 @@
 namespace Config {
 	// General
 	constexpr unsigned SENSOR_ARR_LEN = 24;
+	constexpr unsigned I2C_INSTANCE_DEFAULT= 1;
+	constexpr unsigned I2C_SDA_DEFAULT= 14;
+	constexpr unsigned I2C_SCL_DEFAULT= 15;
 
 	// Modbus Addr.
 	constexpr unsigned GMP252_ADDR = 240; // CO2
