@@ -13,5 +13,6 @@ include($ENV{FREERTOS_KERNEL_PATH}/portable/ThirdParty/GCC/RP2040/FreeRTOS_Kerne
 
 project(${ProjectName})
 pico_sdk_init()
-add_subdirectory(include)
+#add_subdirectory(include)
 add_subdirectory(src)
+add_subdirectory(lib)

@@ -1,7 +1,8 @@
 
 #include "namespace/config.hpp"
-#include "driver/i2c.hpp"
 #include "hardware/i2c.h"
+
+#include "i2c.hpp"
 
 // I2C driver
 // constructor for i2c bus. Inits i2cX and SDA/SCL pins
