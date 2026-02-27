@@ -1,5 +1,5 @@
 
-add_executable(${PROJECT_NAME} 
+add_executable(${PROJECT_NAME}
     main.cpp
 )
 
@@ -14,8 +14,7 @@ add_compile_options(
 )
 
 target_link_libraries(${PROJECT_NAME}
-	driver_i2c
-    driver_rom
+	driver_rom
 	hardware_i2c
 	pico_stdlib
     FreeRTOS-Kernel-Heap4
