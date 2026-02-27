@@ -43,7 +43,8 @@
 //Example of using I2CController class
 
 #include "pico/stdlib.h"
-#include "driver/rom"
+#include "driver/rom.hpp"
+#include "driver/i2c.hpp"
 
 #include <stdio.h>
 #include <memory>

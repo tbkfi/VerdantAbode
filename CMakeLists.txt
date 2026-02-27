@@ -7,9 +7,6 @@ SET(PROJECT_NAME "VerdantAbode")
 set(PICO_BOARD pico_w)
 
 
-# dir is different. maybe needed
-#SET(FREERTOS_KERNEL_PATH "${CMAKE_CURRENT_SOURCE_DIR}/module/freertos-kernel") 
-
 option(FETCH_FROM_GIT "Compile against local or remote repositories" ON) #ON by default
 if(FETCH_FROM_GIT)
     set(PICO_SDK_FETCH_FROM_GIT on)
@@ -25,23 +22,28 @@ endif(FETCH_FROM_GIT)
 unset(FETCH_FROM_GIT CACHE) # <---- this is the important!!
 
 project(${PROJECT_NAME} C CXX ASM)
-
 pico_sdk_init()
 
 # incorrect -- SET(FREERTOS_KERNEL_PATH ${CMAKE_CURRENT_SOURCE_DIR}/module/freertos-kernel/FreeRTOS-KernelV10.6.2)
 # incorrect -- SET(FREERTOS_KERNEL_PATH ${CMAKE_CURRENT_SOURCE_DIR}/module/freertos-kernel/portable/ThirdParty/GCC/RP2040/FreeRTOS-KernelV10.6.2)
 
+
+# make configs under include/ visible to all targets
+set(PROJECT_CONFIG project_config)
+add_library(${PROJECT_CONFIG} INTERFACE)
+target_include_directories(${PROJECT_CONFIG}
+    INTERFACE
+    ${CMAKE_SOURCE_DIR}/include
+)
+# --  target_include_directories(${PROJECT_NAME} 
+# --      PUBLIC
+# --      include
+# --      include/namespace
+# --  )
+
+# -- include_directories(include)
+# -- include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
+
 add_subdirectory(src)
 add_subdirectory(lib)
 
-# target_include_directories(${PROJECT_NAME} 
-#     PUBLIC
-#     include
-#     include/namespace
-# )
-
-include_directories(include)
-#include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
-#include($ENV{FREERTOS_KERNEL_PATH}/portable/ThirdParty/GCC/RP2040/FreeRTOS_Kernel_import.cmake)
-#include(module/pico_sdk_import.cmake)
-#include(${_PICO_SDK_PATH}/pico_sdk_init.cmake)

@@ -7,13 +7,14 @@ add_library(${I2C_LIB}
 target_link_libraries(${I2C_LIB}
     hardware_i2c
     pico_stdlib
+
+    project_config
 )
 # not sure if this is needed. until further notice
 # target_include_directories(${I2C_LIB}
 #     PUBLIC
 #     ${CMAKE_CURRENT_SOURCE_DIR}
 # )
-
 
 set(ROM_LIB "driver_rom")
 add_library(${ROM_LIB}
@@ -25,6 +26,7 @@ target_link_libraries(${ROM_LIB}
     pico_stdlib
 
     driver_i2c
+    project_config
 )
 
 # NOTE: ROM_LIB is PUBLIC(line 24), because we want to automatically link
