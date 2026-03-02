@@ -17,6 +17,7 @@ target_link_libraries(${PROJECT_NAME}
     PUBLIC
     project_config
 
+    driver_net
 	driver_rom
 	hardware_i2c
 	pico_stdlib

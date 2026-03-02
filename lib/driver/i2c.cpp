@@ -4,7 +4,7 @@
 #include "hardware/gpio.h"
 
 #include "namespace/config.hpp"
-#include "i2c.hpp"
+#include "driver/i2c.hpp"
 
 #include <cstring>
 #include <stdio.h>
