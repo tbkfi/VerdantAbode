@@ -35,20 +35,21 @@ target_link_libraries(${ROM_LIB}
     project_config  # ! <-- importando !!
 )
 
-set(NET_LIB "driver_net")
-add_library(${NET_LIB}
-    driver/wifi.cpp
-)
-target_include_directories(${I2C_LIB}
-    PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
-target_link_libraries(${NET_LIB}
-    PUBLIC
-    pico_cyw43_arch_lwip_sys_freertos
-    pico_lwip_mbedtls
-    pico_mbedtls
 
-    project_config  # ! <-- importando !!
-)
+#  set(NET_LIB "driver_net")
+#  add_library(${NET_LIB}
+#      driver/wifi.cpp
+#  )
+#  target_include_directories(${I2C_LIB}
+#      PUBLIC
+#      ${CMAKE_CURRENT_SOURCE_DIR}/include
+#  )
+#  target_link_libraries(${NET_LIB}
+#      PUBLIC
+#      pico_cyw43_arch_lwip_sys_freertos
+#      pico_lwip_mbedtls
+#      pico_mbedtls
+#  
+#      project_config  # ! <-- importando !!
+#  )
 

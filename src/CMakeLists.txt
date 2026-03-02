@@ -17,11 +17,12 @@ target_link_libraries(${PROJECT_NAME}
     PUBLIC
     project_config
 
-    driver_net
 	driver_rom
 	hardware_i2c
 	pico_stdlib
     FreeRTOS-Kernel-Heap4
+
+#    driver_net # will get back to this later.
 )
 
 pico_add_extra_outputs(${PROJECT_NAME})
