@@ -1,6 +1,6 @@
 # lib/CMakeLists.txt
 
-# NOTE: ROM_LIB is PUBLIC(line 24), because we want to automatically link
+# NOTE: ROM_LIB is PUBLIC, because we want to automatically link
 #       I2C_LIB to anything that includes ROM_LIB, and prevent double linking
 
 # NOTE: target_link_libraries is needed to expose include/ directory
@@ -19,9 +19,9 @@ target_link_libraries(${I2C_LIB}
 )
 target_include_directories(${I2C_LIB}
     PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/include
 )
-
+##############################################################################
 set(ROM_LIB "driver_rom")
 add_library(${ROM_LIB}
     driver/rom.cpp
@@ -34,7 +34,45 @@ target_link_libraries(${ROM_LIB}
     driver_i2c
     project_config  # ! <-- importando !!
 )
+##############################################################################
+set(UART_LIB "driver_uart")
+add_library(${UART_LIB}
+    driver/uart.cpp
+    ringbuffer.cpp
+)
+target_link_libraries(${UART_LIB}
+    PUBLIC
+    project_config
+    hardware_gpio
+)
+target_include_directories(${UART_LIB}
+    PUBLIC
+    ${CMAKE_SOURCE_DIR}/include
+)
+##############################################################################
 
+# add_library(nanomodbus
+#     modbus/nanomodbus.h
+#     modbus/nanomodbus.c
+# )
+
+##############################################################################
+add_library(modbus
+    modbus/modbus_client.cpp
+    modbus/modbus_register.cpp
+    modbus/nanomodbus.c
+)
+target_include_directories(modbus
+    PUBLIC
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/include/modbus
+)
+target_link_libraries(modbus
+    PUBLIC
+    pico_stdlib
+    driver_uart
+)
+##############################################################################
 
 #  set(NET_LIB "driver_net")
 #  add_library(${NET_LIB}

@@ -45,15 +45,41 @@
 #include "pico/stdlib.h"
 #include "driver/rom.hpp"
 #include "driver/i2c.hpp"
+#include "modbus/register.hpp"
+#include "modbus/client.hpp"
+
+#include <driver/uart.hpp>
 
 #include <stdio.h>
 #include <memory>
+
+
+#define UART_NR 1
+#define UART_TX_PIN 4
+#define UART_RX_PIN 5
+#define BAUD_RATE 9600
+#define STOP_BITS 1
 
 int main(void)
 {
     timer_hw->dbgpause = 0;
     stdio_init_all();
 
+    auto uart{std::make_shared<PicoUart>(UART_NR, UART_TX_PIN, UART_RX_PIN, BAUD_RATE, STOP_BITS)};
+    auto rtu_client{std::make_shared<ModbusClient>(uart)};
+
+    //ModbusRegister gmp252 (rtu_client, 240, 1);
+    ModbusRegister gmp252 (rtu_client, 2049, 0x0800);
+
+    while (true) {
+        auto modbus_poll = make_timeout_time_ms(3000);
+        printf(">> %u \n", gmp252.read());
+        sleep_ms(100);
+        //ModbusRegister produal(rtu_client, 1, 0);
+        //produal.write(100);
+    }
+
+#if 0
     std::shared_ptr<I2CController> i2c_1 = 
         std::make_shared<I2CController>(1, 14, 15);
 
@@ -67,6 +93,8 @@ int main(void)
     //i2c_1.write(0x50, (const uint8_t*)payload, sizeof(payload), 0);
     //i2c_1.read(0x50, recovered, sizeof(payload), 0);
     printf(">> %s\n", (uint8_t*)recovered);
+#endif
     return 0;
 }
+
 
