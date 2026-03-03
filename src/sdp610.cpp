@@ -61,7 +61,7 @@ QueueHandle_t task_create_sdp610(SYSTEM::DATA* system_state) {
 	sdp610_param.sys = system_state;
 	sdp610_param.que = xQueueCreate(8, sizeof(SDP610::MEASUREMENT));
 
-	xTaskCreate(task_sdp610, "SDP610", 512, (void *) &sdp610_param, tskIDLE_PRIORITY + 2, NULL);
+	xTaskCreate(task_sdp610, "SDP610", 512, (void *) &sdp610_param, SDP610::TASK_PRIORITY, NULL);
 
 	return sdp610_param.que;
 }

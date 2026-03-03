@@ -23,6 +23,7 @@
 int main() {
 	// [INIT HW]
 	stdio_init_all();
+	//init_i2c();
 
 	// [SYSTEM]
 	SYSTEM::DATA system;
@@ -30,7 +31,7 @@ int main() {
 	
 	// [TASKS]
 	task_create_blink();
-	//system.sdp610_queue = task_create_sdp610(&system);
+	system.sdp610_queue = task_create_sdp610(&system);
 
 
     vTaskStartScheduler();

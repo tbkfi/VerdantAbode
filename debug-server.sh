@@ -1,2 +1,2 @@
 #!/bin/bash
-source .venv/bin/activate && pyocd-gdbserver --target rp2040
+source .venv/bin/activate && pyocd gdbserver --persist --target rp2040

@@ -15,6 +15,7 @@
 #include "hardware/i2c.h"
 
 #include "FreeRTOS.h"
+#include "portmacro.h"
 #include "queue.h"
 
 #include "system.hpp"
@@ -26,6 +27,7 @@ namespace SDP610 {
 	constexpr unsigned ADDR = 0x40;
 	constexpr uint8_t CMD_MEASURE = 0xF1;
 
+	constexpr UBaseType_t TASK_PRIORITY = tskIDLE_PRIORITY + 2;
 	constexpr unsigned POLL_MS = 2 * 1000;      // How often we wish to poll
 	constexpr unsigned INTEGRATION_TIME_MS = 8;  // Typical: 4.6ms
 	constexpr uint8_t SCALE_FACTOR = 240;        // 60 / 240 / 1200, depending on SKU
