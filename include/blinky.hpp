@@ -6,9 +6,12 @@
 	xTaskCreate(blink_task, "LED_2", 256, (void *) &lp2, tskIDLE_PRIORITY + 1, NULL);
 
 */
-
 #pragma once
+
+#include <stdio.h>
 #include "pico/stdlib.h"
+#include "FreeRTOS.h"
+#include "task.h"
 
 struct led_params{
     uint pin;
@@ -16,3 +19,4 @@ struct led_params{
 };
 
 void blink_task(void *param);
+void task_create_blink(void);

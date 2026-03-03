@@ -3,8 +3,8 @@ add_executable(
 	main.cpp
 	util.cpp
 	blinky.cpp
-	i2c.cpp
-	ssd1306.cpp
+	sdp610.cpp
+	#i2c.cpp
 )
 
 target_include_directories(

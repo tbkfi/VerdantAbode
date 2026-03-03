@@ -3,6 +3,10 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_C_STANDARD 23)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+set(CMAKE_BUILD_TYPE Debug)
+add_compile_options(-O0 -g)
+
+
 SET(PROJECT_NAME "VerdantAbode")
 
 # Pico-SDK and FreeRTOS
