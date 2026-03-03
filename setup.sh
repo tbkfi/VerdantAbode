@@ -58,7 +58,7 @@ setup_venv() {
 	fi
 	
 	# Requirements
-	local PIP_TOOLS="pyocd"
+	local PIP_TOOLS="pyocd freertos-gdb"
 
 	echo -n "* Installing Tools ... "
 		pip install $PIP_TOOLS > /dev/null 2>&1

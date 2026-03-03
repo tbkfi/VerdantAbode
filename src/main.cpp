@@ -18,7 +18,7 @@
     uint32_t read_runtime_ctr(void) {
         return timer_hw->timerawl;
     }
-} 
+}
 
 int main() {
 	// [INIT HW]
@@ -28,13 +28,13 @@ int main() {
 	// [SYSTEM]
 	SYSTEM::DATA system;
 	system.co2_setpoint = 1200;
+	system.semaphore_i2c = xSemaphoreCreateBinary();
 	
 	// [TASKS]
 	task_create_blink();
 	system.sdp610_queue = task_create_sdp610(&system);
 
-
-    vTaskStartScheduler();
+	vTaskStartScheduler();
 
 
 

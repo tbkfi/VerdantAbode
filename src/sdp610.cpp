@@ -60,8 +60,14 @@ QueueHandle_t task_create_sdp610(SYSTEM::DATA* system_state) {
 	static SDP610::PARAM sdp610_param;
 	sdp610_param.sys = system_state;
 	sdp610_param.que = xQueueCreate(8, sizeof(SDP610::MEASUREMENT));
+	vQueueAddToRegistry(sdp610_param.que, "SDP610");
 
-	xTaskCreate(task_sdp610, "SDP610", 512, (void *) &sdp610_param, SDP610::TASK_PRIORITY, NULL);
+	if (sdp610_param.que == NULL) {
+		printf("[SDP610] Queue is NULL\n");
+		while (true);
+	}
+
+	xTaskCreate(task_sdp610, "SDP610", 2048, (void *) &sdp610_param, SDP610::TASK_PRIORITY, NULL);
 
 	return sdp610_param.que;
 }
