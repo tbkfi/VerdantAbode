@@ -1,17 +1,24 @@
 add_executable(
 	${PROJECT_NAME}
-		main.cpp
+	main.cpp
+	util.cpp
+	blinky.cpp
+	i2c.cpp
+	ssd1306.cpp
 )
 
 target_include_directories(
 	${PROJECT_NAME} PRIVATE
 	${CMAKE_CURRENT_LIST_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/../include
 )
 
 target_link_libraries(
 	${PROJECT_NAME} 
-		pico_stdlib 
-		FreeRTOS-Kernel-Heap4
+	pico_stdlib 
+	hardware_gpio
+	hardware_i2c
+	FreeRTOS-Kernel-Heap4
 )
 
 pico_add_extra_outputs(${PROJECT_NAME})

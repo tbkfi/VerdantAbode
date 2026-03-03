@@ -1,12 +1,17 @@
 #pragma once
 
+#include <cstdint>
 #include "hardware/i2c.h"
 
 namespace Pin {
-	// Local Buttons
+	// Local Inputs
 	const unsigned char BTN1 = 7;
 	const unsigned char BTN2 = 8;
 	const unsigned char BTN3 = 9;
+
+	const unsigned char ROTA = 10;
+	const unsigned char ROTB = 11;
+	const unsigned char ROTC = 12;
 
 	// Local Vent
 	const unsigned char EXHAUST_VALVE = 32;
@@ -30,13 +35,14 @@ namespace Pin {
 	const unsigned char UART_RX_SLAVE = 4;
 
 	// I2C (Sensirion)
-	const i2c_inst_t I2C1_UNIT = i2c1;
-	const unsigned char I2C0_SDA = 14;
-	const unsigned char I2C0_SCL = 15;
+	inline i2c_inst_t* const I2C1_UNIT = i2c1;
+	const uint32_t      I2C1_BAUD = 100 * 1000;
+	const unsigned char I2C0_SDA  = 14;
+	const unsigned char I2C0_SCL  = 15;
 
 	// I2C (EEPROM)
-	const i2c_inst_t I2C0_UNIT = i2c0;
-	const unsigned char I2C1_SDA = 16;
-	const unsigned char I2C1_SCL = 17;
+	inline i2c_inst_t* const I2C0_UNIT = i2c0;
+	const uint32_t      I2C0_BAUD = 100 * 1000;
+	const unsigned char I2C1_SDA  = 16;
+	const unsigned char I2C1_SCL  = 17;
 }
-

@@ -4,3 +4,6 @@
 [submodule "module/freertos-kernel"]
 	path = module/freertos-kernel
 	url = https://github.com/FreeRTOS/FreeRTOS-Kernel.git
+[submodule "module/nanoMODBUS"]
+	path = module/nanoMODBUS
+	url = https://github.com/debevv/nanoMODBUS
