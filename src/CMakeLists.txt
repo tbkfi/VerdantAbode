@@ -3,8 +3,6 @@ add_executable(
 	main.cpp
 	util.cpp
 
-	#i2c.cpp
-
 	blinky.cpp
 	sdp610.cpp
 )

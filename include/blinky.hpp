@@ -5,10 +5,16 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-struct led_params{
-    uint pin;
-    uint delay;
-};
+namespace BLINKY {
+	constexpr uint8_t PIN = 20;
+	constexpr uint8_t DELAY_MS = 250;
 
-void blink_task(void *param);
+	struct CTX {
+		uint8_t pin;
+		uint16_t delay_ms;
+	};
+
+}
+
+void task_blink(void *param);
 void task_create_blink(void);
