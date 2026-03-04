@@ -1,3 +1,5 @@
+#include <stdint.h>
+
 enum class InputAction {
     PRESS,
     LEFT,

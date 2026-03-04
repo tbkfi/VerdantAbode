@@ -2,9 +2,11 @@ add_executable(
 	${PROJECT_NAME}
 	main.cpp
 	util.cpp
+
+	#i2c.cpp
+
 	blinky.cpp
 	sdp610.cpp
-	#i2c.cpp
 )
 
 target_include_directories(

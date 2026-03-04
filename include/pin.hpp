@@ -35,14 +35,14 @@ namespace Pin {
 	const unsigned char UART_RX_SLAVE = 4;
 
 	// I2C (Sensirion)
-	inline i2c_inst_t* const I2C1_UNIT = i2c1;
-	const uint32_t      I2C1_BAUD = 100 * 1000;
-	const unsigned char I2C0_SDA  = 14;
-	const unsigned char I2C0_SCL  = 15;
-
-	// I2C (EEPROM)
 	inline i2c_inst_t* const I2C0_UNIT = i2c0;
 	const uint32_t      I2C0_BAUD = 100 * 1000;
-	const unsigned char I2C1_SDA  = 16;
-	const unsigned char I2C1_SCL  = 17;
+	const unsigned char I2C0_SDA  = 16;
+	const unsigned char I2C0_SCL  = 17;
+
+	// I2C (EEPROM)
+	inline i2c_inst_t* const I2C1_UNIT = i2c1;
+	const uint32_t      I2C1_BAUD = 100 * 1000;
+	const unsigned char I2C1_SDA  = 14;
+	const unsigned char I2C1_SCL  = 15;
 }

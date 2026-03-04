@@ -1,10 +1,4 @@
-// Sensirion SDP610
-// Pressure sensor via I2C
-//
-// [Example usage]
-// static SDP610::PARAM sdp610_param;
-// sdp610_param.sys = &system_state;
-// sdp610_param.que = xQueueCreate(8, sizeof(SDP610::MEASUREMENT));
+// Sensirion SDP610 (I2C)
 #pragma once
 
 #include <stdio.h>
@@ -15,8 +9,10 @@
 #include "hardware/i2c.h"
 
 #include "FreeRTOS.h"
+#include "projdefs.h"
 #include "portmacro.h"
 #include "queue.h"
+#include "semphr.h"
 
 #include "system.hpp"
 #include "pin.hpp"
@@ -24,27 +20,30 @@
 
 
 namespace SDP610 {
+	constexpr bool DEBUG = true; // Print debugs?
 	constexpr unsigned ADDR = 0x40;
 	constexpr uint8_t CMD_MEASURE = 0xF1;
+	constexpr uint16_t POLL_INTERVAL_MS = 1 * 1000;
 
 	constexpr UBaseType_t TASK_PRIORITY = tskIDLE_PRIORITY + 2;
-	constexpr unsigned POLL_MS = 2 * 1000;      // How often we wish to poll
-	constexpr unsigned INTEGRATION_TIME_MS = 8;  // Typical: 4.6ms
-	constexpr uint8_t SCALE_FACTOR = 240;        // 60 / 240 / 1200, depending on SKU
+	constexpr uint16_t STACK_DEPTH = 1024;
+	constexpr uint8_t QUE_LEN = 8;
+	constexpr uint8_t INTEGRATION_TIME_MS = 8;          // Typical: 4.6ms
+	constexpr uint8_t SCALE_FACTOR = 240;               // 60 | 240 | 1200 (depend on SKU)
 	constexpr float CORRECTION_FACTOR = 966.f / 1016.f; // Ambient % Calibration
+
+	struct CTX {
+	// Task Context
+		QueueHandle_t que;
+		SemaphoreHandle_t sem;
+	};
 
 	struct MEASUREMENT {
 	// Individual measurements
 		uint32_t time_ms;
 		int16_t data;
 	};
-
-	struct PARAM {
-	// Task parameters
-		SYSTEM::DATA *sys;
-		QueueHandle_t que;
-	};
 }
 
 void task_sdp610(void *param);
-QueueHandle_t task_create_sdp610(SYSTEM::DATA* system_state);
+QueueHandle_t task_create_sdp610(SemaphoreHandle_t mutex_i2c);
