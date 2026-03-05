@@ -1,3 +1,8 @@
+/* VerdantAbode
+ * blinky.cpp
+ *
+ * Tuomo Björk
+*/
 #include "blinky.hpp"
 
 

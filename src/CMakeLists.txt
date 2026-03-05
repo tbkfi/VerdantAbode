@@ -4,7 +4,9 @@ add_executable(
 	util.cpp
 
 	blinky.cpp
+	parser.cpp
 	sdp610.cpp
+	gmp252.cpp
 
 	local_inputs.cpp
 )

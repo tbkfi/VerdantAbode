@@ -1,3 +1,8 @@
+/* VerdantAbode
+ * blinky.hpp
+ *
+ * Tuomo Björk
+*/
 #pragma once
 
 #include <stdio.h>

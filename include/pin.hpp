@@ -16,11 +16,6 @@ namespace Pin {
 	// Local Vent
 	const unsigned char EXHAUST_VALVE = 32;
 
-	// Rotary Encoder
-	const unsigned char ROT1 = 10;
-	const unsigned char ROT2 = 11;
-	const unsigned char ROT_SW = 12;
-
 	// Local LED indicators
 	const unsigned char LED1 = 20;
 	const unsigned char LED2 = 21;

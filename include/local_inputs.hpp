@@ -1,3 +1,8 @@
+/* VerdantAbode
+ * local_inputs.hpp
+ *
+ * Tuomo Björk
+*/
 #pragma once
 
 #include <stdio.h>
@@ -23,10 +28,10 @@ namespace LOCAL_INPUTS {
 	constexpr uint8_t ROTB_PIN = 11;
 	constexpr uint8_t ROTC_PIN = 12;
 
-	constexpr uint16_t DEBOUNCE_MS = 50;
+	constexpr uint16_t DEBOUNCE_MS = 2000;
 
 	// Queue
-	constexpr uint8_t QUE_LEN = 16;
+	constexpr uint8_t QUE_LEN = 32;
 	struct QUE_ELEMENT {
 		uint8_t pin;
 		uint32_t time_ms;
@@ -34,7 +39,6 @@ namespace LOCAL_INPUTS {
 }
 
 void isr_local_input(uint gpio, uint32_t events);
-
 void init_btn(uint8_t pin);
 void init_rot(uint8_t pin_a, uint8_t pin_b, uint8_t pin_sw);
 
