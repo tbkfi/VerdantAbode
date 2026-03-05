@@ -36,7 +36,7 @@ namespace SDP610 {
 	struct CTX {
 	// Task Context
 		QueueHandle_t que;
-		SemaphoreHandle_t sem;
+		SemaphoreHandle_t mutex;
 	};
 
 	struct QUE_ELEMENT {

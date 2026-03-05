@@ -6,7 +6,7 @@
 
 QueueHandle_t task_create_sdp610(SemaphoreHandle_t mutex_i2c) {
 	static SDP610::CTX ctx;
-	ctx.sem = mutex_i2c;
+	ctx.mutex = mutex_i2c;
 	ctx.que = xQueueCreate(SDP610::QUE_LEN, sizeof(SDP610::QUE_ELEMENT));
 
 	// Validation, Registration
@@ -40,7 +40,7 @@ void task_sdp610(void* param) {
 
 		// Instruct to Measure
 		if (SDP610::DEBUG) printf("[SDP610] Trying to obtain I2C Mutex (1/2)...\n");
-		if (xSemaphoreTake(ctx->sem, pdMS_TO_TICKS(25)) != pdTRUE) {
+		if (xSemaphoreTake(ctx->mutex, pdMS_TO_TICKS(25)) != pdTRUE) {
 			if (SDP610::DEBUG) printf("[SDP610] I2C not free!\n");
 		}
 		else {
@@ -52,7 +52,7 @@ void task_sdp610(void* param) {
 			measure_start_time = xTaskGetTickCount();
 			rc = i2c_write_timeout_us(Pin::I2C1_UNIT, SDP610::ADDR, &SDP610::CMD_MEASURE,
 							 1, false, SDP610::I2C_TIMEOUT_US);
-			xSemaphoreGive(ctx->sem);
+			xSemaphoreGive(ctx->mutex);
 			vTaskDelay(pdMS_TO_TICKS(SDP610::INTEGRATION_TIME_MS)); 
 
 			// Read Measurement
@@ -62,7 +62,7 @@ void task_sdp610(void* param) {
 			else {
 				if (SDP610::DEBUG) printf("[SDP610] Trying to obtain I2C Mutex (2/2)...\n");
 
-				if (xSemaphoreTake(ctx->sem, pdMS_TO_TICKS(100)) != pdTRUE) {
+				if (xSemaphoreTake(ctx->mutex, pdMS_TO_TICKS(100)) != pdTRUE) {
 					if (SDP610::DEBUG) printf("[SDP610] I2C not free!\n");
 				}
 				else {
@@ -73,7 +73,7 @@ void task_sdp610(void* param) {
 
 					rc = i2c_read_timeout_us(Pin::I2C1_UNIT, SDP610::ADDR, buffer,
 							   3, false, SDP610::I2C_TIMEOUT_US);
-					xSemaphoreGive(ctx->sem);
+					xSemaphoreGive(ctx->mutex);
 
 					// Expect 3 bytes: MSB, LSB, CRC
 					if (rc != 3) {
