@@ -26,8 +26,8 @@ void task_parser(void* param) {
 		if (ctx->sdp610_queue != NULL && xQueueReceive(ctx->sdp610_queue, &e_sdp610, 0) == pdTRUE)
 			action_sdp610(ctx, &e_sdp610);
 		// GMP252 for CO2
-		//if (ctx->gmp252_queue != NULL && xQueueReceive(ctx->gmp252_queue, &e_gmp252, 0) == pdTRUE)
-			//action_gmp252(ctx, &e_gmp252);
+		if (ctx->gmp252_queue != NULL && xQueueReceive(ctx->gmp252_queue, &e_gmp252, 0) == pdTRUE)
+			action_gmp252(ctx, &e_gmp252);
 	}
 }
 

@@ -3,6 +3,12 @@ add_executable(
 	main.cpp
 	util.cpp
 
+	uart.cpp
+	nanomodbus.c
+	modbus_register.cpp
+	modbus_client.cpp
+	ringbuffer.cpp
+
 	blinky.cpp
 	parser.cpp
 	sdp610.cpp
