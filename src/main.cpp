@@ -10,6 +10,7 @@ extern "C" {
 
 #include "blinky.hpp"
 #include "sdp610.hpp"
+#include "local_inputs.hpp"
 
 
 int main() {
@@ -25,6 +26,7 @@ int main() {
 	
 	// TASKS
 	task_create_blink();
+	system.input_queue = create_local_inputs();
 	system.sdp610_queue = task_create_sdp610(system.mutex_i2c);
 
 	vTaskStartScheduler();

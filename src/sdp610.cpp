@@ -1,10 +1,12 @@
 #include "sdp610.hpp"
+#include "portmacro.h"
+#include "projdefs.h"
 
 
 QueueHandle_t task_create_sdp610(SemaphoreHandle_t mutex_i2c) {
 	static SDP610::CTX ctx;
 	ctx.sem = mutex_i2c;
-	ctx.que = xQueueCreate(SDP610::QUE_LEN, sizeof(SDP610::MEASUREMENT));
+	ctx.que = xQueueCreate(SDP610::QUE_LEN, sizeof(SDP610::QUE_ELEMENT));
 
 	// Validation, Registration
 	if (ctx.que == NULL) {
@@ -12,6 +14,7 @@ QueueHandle_t task_create_sdp610(SemaphoreHandle_t mutex_i2c) {
 	}
 	vQueueAddToRegistry(ctx.que, "SDP610");
 
+	// Task
 	xTaskCreate(task_sdp610, "SDP610", SDP610::STACK_DEPTH, (void *) &ctx, SDP610::TASK_PRIORITY, NULL);
 
 	return ctx.que;
@@ -25,7 +28,9 @@ void task_sdp610(void* param) {
 	uint8_t crc = 0;
 	int16_t reading_raw = 0;
 	float   reading = 0;
+	SDP610::QUE_ELEMENT e;
 
+	TickType_t measure_start_time = xTaskGetTickCount();
 	TickType_t last_ran = xTaskGetTickCount();
 	TickType_t poll_time = pdMS_TO_TICKS(SDP610::POLL_INTERVAL_MS);
 
@@ -33,18 +38,19 @@ void task_sdp610(void* param) {
 		vTaskDelayUntil(&last_ran, poll_time);
 
 		// Instruct to Measure
-		if (SDP610::DEBUG) printf("[SDP610] Trying to obtain I2C Semaphore (1/2)...\n");
+		if (SDP610::DEBUG) printf("[SDP610] Trying to obtain I2C Mutex (1/2)...\n");
 		if (xSemaphoreTake(ctx->sem, pdMS_TO_TICKS(25)) != pdTRUE) {
 			if (SDP610::DEBUG) printf("[SDP610] I2C not free!\n");
 		}
 		else {
 			if (SDP610::DEBUG) printf("[SDP610] Instructing to Measure...\n");
+			measure_start_time = xTaskGetTickCount();
 			i2c_write_blocking(Pin::I2C1_UNIT, SDP610::ADDR, &SDP610::CMD_MEASURE, 1, false);
 			xSemaphoreGive(ctx->sem);
 			vTaskDelay(pdMS_TO_TICKS(SDP610::INTEGRATION_TIME_MS)); 
 
 			// Read Measurement
-			if (SDP610::DEBUG) printf("[SDP610] Trying to obtain I2C Semaphore (2/2)...\n");
+			if (SDP610::DEBUG) printf("[SDP610] Trying to obtain I2C Mutex (2/2)...\n");
 			if (xSemaphoreTake(ctx->sem, pdMS_TO_TICKS(100)) == pdTRUE) {
 				if (SDP610::DEBUG) printf("[SDP610] Reading Measurement...\n");
 				ctr = i2c_read_blocking(Pin::I2C1_UNIT, SDP610::ADDR, buffer, 3, false);
@@ -68,8 +74,10 @@ void task_sdp610(void* param) {
 					// >> DP_eff = DP_sensor * (P_cal / P_amb)
 					reading = reading * SDP610::CORRECTION_FACTOR;
 
-					// Store, Report
-					xQueueSend(ctx->que, &reading, 0);
+					// Queue element
+					e.time_ms = pdTICKS_TO_MS(measure_start_time);
+					e.data = reading;
+					xQueueSend(ctx->que, &e, 0);
 					printf("[%lu] SDP610: %f Pa\n", pdTICKS_TO_MS(xTaskGetTickCount()), reading);
 				}
 			}

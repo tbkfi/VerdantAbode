@@ -5,6 +5,8 @@ add_executable(
 
 	blinky.cpp
 	sdp610.cpp
+
+	local_inputs.cpp
 )
 
 target_include_directories(

@@ -20,7 +20,7 @@
 
 
 namespace SDP610 {
-	constexpr bool DEBUG = true; // Print debugs?
+	constexpr bool DEBUG = false; // Print debugs?
 	constexpr unsigned ADDR = 0x40;
 	constexpr uint8_t CMD_MEASURE = 0xF1;
 	constexpr uint16_t POLL_INTERVAL_MS = 1 * 1000;
@@ -38,7 +38,7 @@ namespace SDP610 {
 		SemaphoreHandle_t sem;
 	};
 
-	struct MEASUREMENT {
+	struct QUE_ELEMENT {
 	// Individual measurements
 		uint32_t time_ms;
 		int16_t data;

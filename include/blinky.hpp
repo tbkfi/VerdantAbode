@@ -7,7 +7,7 @@
 
 namespace BLINKY {
 	constexpr uint8_t PIN = 20;
-	constexpr uint8_t DELAY_MS = 250;
+	constexpr uint16_t DELAY_MS = 1250;
 
 	struct CTX {
 		uint8_t pin;
