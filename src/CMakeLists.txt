@@ -16,6 +16,7 @@ add_compile_options(
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
     project_config
+    tasks
 
     modbus
 	driver_rom

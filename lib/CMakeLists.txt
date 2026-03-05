@@ -34,6 +34,10 @@ target_link_libraries(${ROM_LIB}
     driver_i2c
     project_config  # ! <-- importando !!
 )
+target_include_directories(${ROM_LIB}
+    PUBLIC
+    ${CMAKE_SOURCE_DIR}/include
+)
 ##############################################################################
 set(UART_LIB "driver_uart")
 add_library(${UART_LIB}
@@ -73,7 +77,20 @@ target_link_libraries(modbus
     driver_uart
 )
 ##############################################################################
-
+add_library(tasks
+    task/gmp252.cpp
+)
+target_link_libraries(tasks
+    PUBLIC
+    modbus
+    FreeRTOS-Kernel-Heap4
+    project_config
+)
+target_include_directories(tasks
+    PUBLIC
+    ${CMAKE_SOURCE_DIR}/include
+)
+##############################################################################
 #  set(NET_LIB "driver_net")
 #  add_library(${NET_LIB}
 #      driver/wifi.cpp

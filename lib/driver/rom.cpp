@@ -1,4 +1,4 @@
-#include "rom.hpp"
+#include <driver/rom.hpp>
 
 
 int EEPROM::read(void* dst, size_t nbyte, uint offset)
