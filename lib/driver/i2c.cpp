@@ -1,14 +1,5 @@
 
-#include "pico/stdlib.h"
-#include "hardware/i2c.h"
-#include "hardware/gpio.h"
-
-#include "namespace/config.hpp"
 #include "driver/i2c.hpp"
-
-#include <cstring>
-#include <stdio.h>
-
 
 // pico-sdk definitions :
 // 	int i2c_write_blocking (i2c_inst_t * i2c, uint8_t addr, const uint8_t * src, size_t len, bool nostop)

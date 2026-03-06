@@ -79,12 +79,14 @@ target_link_libraries(modbus
 ##############################################################################
 add_library(tasks
     task/gmp252.cpp
+    task/sdp610.cpp
 )
 target_link_libraries(tasks
     PUBLIC
     modbus
     FreeRTOS-Kernel-Heap4
     project_config
+    ${I2C_LIB}
 )
 target_include_directories(tasks
     PUBLIC

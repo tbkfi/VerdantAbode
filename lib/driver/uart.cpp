@@ -4,10 +4,7 @@
 // Created by Keijo Länsikunnas on 4.2.2024.
 //
 
-#include <cstring>
-#include <hardware/gpio.h>
 #include <driver/uart.hpp>
-
 
 static PicoUart *uart_inst0;
 static PicoUart *uart_inst1;

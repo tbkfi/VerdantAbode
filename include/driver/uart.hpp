@@ -9,8 +9,11 @@
 
 #include <hardware/uart.h>
 #include <hardware/irq.h>
+#include <hardware/gpio.h>
 #include <string>
 #include "ringbuffer.hpp"
+
+#include <cstring>
 
 class PicoUart {
     friend void pico_uart0_handler(void);

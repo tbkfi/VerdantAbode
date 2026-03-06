@@ -1,7 +1,13 @@
 // I2C driver
 #pragma once
 #include "namespace/config.hpp"
+
+#include "pico/stdlib.h"
 #include "hardware/i2c.h"
+#include "hardware/gpio.h"
+
+#include <cstring>
+#include <stdio.h>
 
 class I2CController {
 private:
