@@ -1,66 +1,58 @@
 #include "wifi.hpp"
+#include "system.hpp"
 #include <stdio.h>
 
 namespace Netti {
 
-    // Initialize static member
     Wifi* Wifi::instance = nullptr;
 
     Wifi::Wifi(const char *ssid0, const char *pass0)
-        : ssid(ssid0), pass(pass0), ipstack(), client(ipstack) 
+        : ssid(ssid0), pass(pass0), ipstack() 
     {
         instance = this;
-        this->connect_wifi();
     }
 
     bool Wifi::connect_wifi() {
-        // Note: Ensure ipstack.connect is implemented for your specific Wi-Fi chip (CYW43)
-        int return_code = ipstack.connect(this->broker_ip, this->broker_port);
-        if (return_code == 0) {
-            this->wifi_connection = true;
-            return true;
-        }
-        this->wifi_connection = false;
-        return false;
+        int return_code = ipstack.connect(IP_ADDR, PORT); 
+        
+        this->wifi_connection = (return_code == 0);
+        return this->wifi_connection;
     }
 
     bool Wifi::is_connected() { 
         return wifi_connection; 
     }
 
-    void task_create_wifi(SemaphoreHandle_t mutex_i2c) {
-        static SemaphoreHandle_t mutex;
-        mutex = mutex_i2c;
-        xTaskCreate(WiFi::task_wifi, "Wi-Fi_Task", Netti::STACK_DEPTH, (void *)&mutex, Netti::TASK_PRIORITY, NULL);
+    void task_create_wifi() {
+        xTaskCreate(task_wifi, "Wifi_Task", STACK_DEPTH, NULL, TASK_PRIORITY, NULL);
     }
 
-    void task_wifi(void* param) {
-        Wifi* net = Wifi::get_instance();
-
+    void task_wifi(void *param) {
         while (true) {
+            Wifi* net = Wifi::get_instance();
+
             if (net == nullptr) {
                 vTaskDelay(pdMS_TO_TICKS(100));
-                net = Wifi::get_instance();
                 continue;
             }
 
-            if (Netti::DEBUG) printf("[Wi-Fi] Checking connection...\n");
-
-            // Use the semaphore to protect I2C or Shared SPI bus if Wi-Fi and I2C share lines
-            if (xSemaphoreTake(mutex, pdMS_TO_TICKS(100)) == pdTRUE) {
+            for (int i = 0; i < 3; i++) {
+                printf("[Wi-Fi] Attempt %d/3...\n", i + 1);
                 
-                if (!net->is_connected()) {
-                    if (!net->connect_wifi()) {
-                        if (Netti::DEBUG) printf("[Wi-Fi] Connection failed!\n");
-                    } else {
-                        if (Netti::DEBUG) printf("[Wi-Fi] Connection successful!\n");
-                    }
+                if (net->connect_wifi()) {
+                    printf("Connected!\n");
+                    xEventGroupSetBits(events, SYSTEM::DATA::FLAG_WIFI_CONNECTED);
+                    break; 
                 }
 
-                xSemaphoreGive(mutex);
+                printf("Attempt %d/3 failed.\n", i + 1);
+                
+                vTaskDelay(pdMS_TO_TICKS(2000));
+               // TO DO: 
+               // WHAT HAPPENS WHEN CONNECTION FAILS 3 TIMES? 
             }
-
-            vTaskDelay(pdMS_TO_TICKS(2000)); // Don't spam the connection logic
+   
+            vTaskDelay(pdMS_TO_TICKS(5000));
         }
     }
-} 
+}
