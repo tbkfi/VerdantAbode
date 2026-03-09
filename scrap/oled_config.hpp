@@ -4,7 +4,7 @@
 
 void print_to_display(char* ctx);
 void draw_screen();
-void refresh_screen();
+void refresh_screen(int co2, int temp, int press, int status);
 void draw_c02(int co2);
 void draw_temp(int temp);
 void draw_pressure(int press); 
