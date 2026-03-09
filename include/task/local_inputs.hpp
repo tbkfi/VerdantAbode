@@ -28,7 +28,7 @@ namespace LOCAL_INPUTS {
 	constexpr uint8_t ROTB_PIN = 11;
 	constexpr uint8_t ROTC_PIN = 12;
 
-	constexpr uint16_t DEBOUNCE_MS = 2000;
+	constexpr uint16_t DEBOUNCE_MS = 150;
 
 	// Queue
 	constexpr uint8_t QUE_LEN = 32;

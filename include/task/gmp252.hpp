@@ -1,3 +1,8 @@
+/* VerdantAbode
+ * gmp252.hpp
+ *
+ * Pavel Shishkin
+*/
 #pragma once
 
 #include <stdint.h>
@@ -10,9 +15,6 @@
 #include <modbus_client.hpp>
 #include <modbus_register.hpp>
 
-//#include "system.hpp"
-//#include "pin.hpp"
-//#include "util.hpp"
 
 void task_gmp252(void *param);
 QueueHandle_t
@@ -31,7 +33,7 @@ namespace GMP252 {
     };
     constexpr uint16_t ADDRESS = 240;
 
-	constexpr bool DEBUG = true; // Print debugs?
+	constexpr bool DEBUG = false; // Print debugs?
 	constexpr uint16_t POLL_INTERVAL_MS = 1 * 1000;
 
 	constexpr UBaseType_t TASK_PRIORITY = tskIDLE_PRIORITY + 2;

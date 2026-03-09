@@ -453,4 +453,3 @@ const char* nmbs_strerror(nmbs_error error);
 #endif
 
 #endif    //NANOMODBUS_H
-

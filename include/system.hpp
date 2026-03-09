@@ -19,6 +19,10 @@
 #include <uart.hpp>
 #include <modbus_client.hpp>
 
+#include "ssd1306.h"
+#include "PicoI2CBus.h"
+#include "PicoI2CDevice.h"
+
 
 namespace SYSTEM {
 	// Variables
@@ -36,8 +40,9 @@ namespace SYSTEM {
 	constexpr uint32_t FLAG_CO2_HIGH       = ( 1 << 0 ); // Indicates high CO2
 	constexpr uint32_t FLAG_CO2_LOW        = ( 1 << 1 ); // Indicates low CO2
 	constexpr uint32_t FLAG_WIFI_SETUP     = ( 1 << 2 ); // Is WIFI setup active?
-	constexpr uint32_t FLAG_WIFI_CONNECTED = ( 1 << 3 ); // Wifi connetion status
-	constexpr uint32_t FLAG_VALVE_OPEN     = ( 1 << 4 ); // CO2 valve is open
+	constexpr uint32_t FLAG_WIFI_PFIELD    = ( 1 << 3 ); // Pass-field selected?
+	constexpr uint32_t FLAG_WIFI_CONNECTED = ( 1 << 4 ); // Wifi connetion status
+	constexpr uint32_t FLAG_VALVE_OPEN     = ( 1 << 5 ); // CO2 valve is open
 
 	struct DATA {
 	// System State
@@ -57,10 +62,15 @@ namespace SYSTEM {
 		int16_t  val_co2;
 		uint32_t val_pa;
 		uint16_t val_fan;
+		uint16_t val_temp;
 
 		// Devices
 		std::shared_ptr<PicoUart> uart;
 		std::shared_ptr<ModbusClient> rtu_client;
+		
+		std::shared_ptr<PicoI2CBus> i2c_bus;
+		std::shared_ptr<PicoI2CDevice> i2c_dev;
+		std::shared_ptr<ssd1306> display;
 
 		// Input Related
 		char setup_c;   // Current Character (setup input fields)

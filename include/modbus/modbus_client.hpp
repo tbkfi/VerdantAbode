@@ -8,6 +8,7 @@
 #include <memory>
 #include <uart.hpp>
 #include <nanomodbus.h>
+#include "pico/time.h"
 
 // Wrapper class does not implement full nanomodbus API
 // addresses are wire addresses (numbering starts from zero)

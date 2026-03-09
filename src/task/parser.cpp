@@ -8,6 +8,7 @@
 #include "system.hpp"
 
 #include "action_local_inputs.hpp"
+//#include "action_wifi_setup.hpp"
 #include "action_sdp610.hpp"
 #include "action_gmp252.hpp"
 
@@ -30,9 +31,9 @@ void task_parser(void* param) {
 
 		// Local inputs
 		if (ctx->input_queue != nullptr && xQueueReceive(ctx->input_queue, &e_local_input, 0) == pdTRUE) {
-			if (flags & SYSTEM::FLAG_WIFI_SETUP) action_local_input_wifi_setup(ctx, &e_local_input);
-			// else if (...)
-			else action_local_input_regular(ctx, &e_local_input);
+			//if (flags & SYSTEM::FLAG_WIFI_SETUP) action_wifi_setup(ctx, &e_local_input);
+			//else action_local_input_regular(ctx, &e_local_input);
+			action_local_input_regular(ctx, &e_local_input);
 		}
 		// SDP610 for Pa
 		if (ctx->sdp610_queue != nullptr && xQueueReceive(ctx->sdp610_queue, &e_sdp610, 0) == pdTRUE) {

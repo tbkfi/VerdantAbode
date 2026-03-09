@@ -1956,4 +1956,3 @@ const char* nmbs_strerror(nmbs_error error) {
     }
 }
 #endif
-

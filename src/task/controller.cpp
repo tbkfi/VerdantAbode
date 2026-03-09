@@ -34,21 +34,21 @@ void task_controller(void* param) {
 	while (true) {
 		vTaskDelayUntil(&last_wake, interval);
 
-		if (ctx->co2_current <= ctx->co2_current - SYSTEM::CO2_SPAN ||
-			ctx->co2_current >= ctx->co2_target + SYSTEM::CO2_SPAN) {
+		if (ctx->val_co2 <= ctx->val_co2 - SYSTEM::CO2_SPAN ||
+			ctx->val_co2 >= ctx->val_co2 + SYSTEM::CO2_SPAN) {
 		// CO2 is within tolerances
 		}
-		else if (ctx->co2_current >= SYSTEM::CO2_CRITICAL) {
+		else if (ctx->val_co2 >= SYSTEM::CO2_CRITICAL) {
 		// CO2 Exceeds CRITICAL target
 			valve(false);
 			fan(100);
 		}
-		else if (ctx->co2_current > ctx->co2_target) {
+		else if (ctx->val_co2 > ctx->co2_target) {
 		// CO2 Exceeds NORMAL target
 			valve(false);
 			fan(20);
 		}
-		else if (ctx->co2_current < ctx->co2_target) {
+		else if (ctx->val_co2 < ctx->co2_target) {
 		// CO2 below target
 			valve(true);
 		}
