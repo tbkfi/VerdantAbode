@@ -1,5 +1,6 @@
 #pragma once
 
+#if 0
 #include "hardware/i2c.h"
 
 namespace Pin {
@@ -39,4 +40,4 @@ namespace Pin {
 	const unsigned char I2C1_SDA = 16;
 	const unsigned char I2C1_SCL = 17;
 }
-
+#endif

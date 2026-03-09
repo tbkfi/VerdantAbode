@@ -48,12 +48,14 @@ void task_gmp252(void* param)
 		vTaskDelayUntil(&last_ran, poll_time);
 
 		// Instruct to Measure
-		if (GMP252::DEBUG) printf("[GMP252] Trying to obtain mutex (1/2)...\n");
+		//if (GMP252::DEBUG) printf("[GMP252] Trying to obtain mutex (1/2)...\n");
+        DBG_PRINT(GMP252::DEBUG, "GMP252", "Trying to obtain mutex (1/2)...");
 
         // get the mutex
 		if (xSemaphoreTake(ctx->mutex, pdMS_TO_TICKS(25)) != pdTRUE)
         {
-			if (GMP252::DEBUG) printf("[GMP252] Mutex busy. Skipping measurement.\n");
+			//if (GMP252::DEBUG) printf("[GMP252] Mutex busy. Skipping measurement.\n");
+            DBG_PRINT(GMP252::DEBUG, "GMP252", "Mutex busy. Skipping measurement.");
 
             vTaskDelay(100);
             
@@ -61,7 +63,7 @@ void task_gmp252(void* param)
             break;
 		}
 
-        if (GMP252::DEBUG) printf("[GMP252] Instructing to Measure...\n");
+        DBG_PRINT(GMP252::DEBUG, "GMP252", "Instructing to measure...");
 
         measure_start_time = xTaskGetTickCount();
 
@@ -70,15 +72,15 @@ void task_gmp252(void* param)
         vTaskDelay(pdMS_TO_TICKS(GMP252::INTEGRATION_TIME_MS)); 
 
         // stage 2: get the result
-        if (GMP252::DEBUG) printf("[GMP252] Trying to obtain mutex (2/2)...\n");
+        DBG_PRINT(GMP252::DEBUG, "GMP252", "Trying to obtain mutex (2/2)...");
         if (xSemaphoreTake(ctx->mutex, pdMS_TO_TICKS(100)) != pdTRUE)
         {
-            if (GMP252::DEBUG) printf("[GMP252] Mutex was not obtained.\n");
+            DBG_PRINT(GMP252::DEBUG, "GMP252", "Trying to obtain mutex (2/2)...");
 
             break;
         }
 
-        if (GMP252::DEBUG) printf("[GMP252] mutex obtained. Measuring ...\n");
+        DBG_PRINT(GMP252::DEBUG, "GMP252", "Trying to obtain mutex (2/2)...");
 
         reading_raw = (int16_t) gmp252.read();
 

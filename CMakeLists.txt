@@ -30,11 +30,18 @@ pico_sdk_init()
 
 # make configs under include/ visible to all targets
 set(PROJECT_CONFIG project_config)
-add_library(${PROJECT_CONFIG} INTERFACE)
+add_library(${PROJECT_CONFIG} INTERFACE include/namespace/system.hpp)
 target_include_directories(${PROJECT_CONFIG}
     INTERFACE
     ${CMAKE_SOURCE_DIR}/include
 )
+target_link_libraries(${PROJECT_CONFIG}
+    INTERFACE
+    FreeRTOS-Kernel-Heap4
+    modbus
+)
+add_subdirectory(src)
+add_subdirectory(lib)
 # --  target_include_directories(${PROJECT_NAME} 
 # --      PUBLIC
 # --      include
@@ -44,6 +51,4 @@ target_include_directories(${PROJECT_CONFIG}
 # -- include_directories(include)
 # -- include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
 
-add_subdirectory(src)
-add_subdirectory(lib)
 

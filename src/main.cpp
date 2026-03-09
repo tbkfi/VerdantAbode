@@ -45,10 +45,10 @@ int main() {
 //Example of using I2CController class
 #endif
 
-
-#include "pico/stdlib.h"
-#include "modbus/register.hpp"
-#include "modbus/client.hpp"
+#include "namespace/system.hpp"
+//#include "pico/stdlib.h"
+//#include "modbus/register.hpp"
+//#include "modbus/client.hpp"
 
 #include <driver/rom.hpp>
 #include <driver/i2c.hpp>
@@ -59,20 +59,21 @@ int main() {
 #include <stdio.h>
 #include <memory>
 
-
-// TODO: vvvv move to a better place
-#define UART_NR 1
-#define UART_TX_PIN 4
-#define UART_RX_PIN 5
-#define BAUD_RATE 9600
-#define STOP_BITS 2
-
 int main(void)
 {
     timer_hw->dbgpause = 0;
     stdio_init_all();
 
-    auto uart{std::make_shared<PicoUart>(UART_NR, UART_TX_PIN, UART_RX_PIN, BAUD_RATE, STOP_BITS)};
+    auto uart {
+    std::make_shared<PicoUart> (
+        SYSTEM::UART::NR_DEFAULT,
+        SYSTEM::UART::TX_PIN_DEFAULT,
+        SYSTEM::UART::RX_PIN_DEFAULT,
+        SYSTEM::UART::BAUD_RATE_DEFAULT,
+        SYSTEM::UART::STOP_BITS_DEFAULT)
+    };
+
+    DBG_PRINT(1, "MAIN", "echo %s", "bravo");
     auto rtu_client{std::make_shared<ModbusClient>(uart)};
 
     //ModbusRegister gmp252 (rtu_client, 240, 0x0100);
