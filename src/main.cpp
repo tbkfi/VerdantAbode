@@ -22,6 +22,7 @@ extern "C" {
 
 
 int main() {
+    timer_hw->dbgpause=0;
 	// HARDWARE initialisation
 	stdio_init_all();
 	init_i2c0();
