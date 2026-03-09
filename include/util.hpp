@@ -12,7 +12,7 @@
 #include "pico/stdlib.h"
 #include "FreeRTOS.h"
 
-#include "pin.hpp"
+#include "system.hpp"
 
 
 void init_i2c0(void);

@@ -14,37 +14,32 @@ extern "C" {
 #include "util.hpp"
 
 #include "blinky.hpp"
+#include "controller.hpp"
+#include "parser.hpp"
+#include "local_inputs.hpp"
 #include "sdp610.hpp"
 #include "gmp252.hpp"
-#include "local_inputs.hpp"
-#include "parser.hpp"
-
-
-
-#define UART_NR 1
-#define UART_TX_PIN 4
-#define UART_RX_PIN 5
-#define BAUD_RATE 9600
-#define STOP_BITS 2
-
-
 
 
 int main() {
-	// INIT HW
+	// HARDWARE initialisation
 	stdio_init_all();
 	init_i2c0();
 	init_i2c1();
 
-	// SYSTEM
-	SYSTEM::DATA system;
+	// SYSTEM initialisation
+	static SYSTEM::DATA system;
 	system.co2_target = 1200;
 	system.events = xEventGroupCreate();
 	system.mutex_i2c = xSemaphoreCreateMutex();
 	system.mutex_uart = xSemaphoreCreateMutex();
+	system.input_queue = nullptr;
+	system.sdp610_queue = nullptr;
+	system.gmp252_queue = nullptr;
 
-    auto uart{std::make_shared<PicoUart>(UART_NR, UART_TX_PIN, UART_RX_PIN, BAUD_RATE, STOP_BITS)};
-    auto rtu_client{std::make_shared<ModbusClient>(uart)};
+    system.uart = std::make_shared<PicoUart> (SYSTEM::UART_NR,
+		SYSTEM::UART_TX_PIN, SYSTEM::UART_RX_PIN, SYSTEM::BAUD_RATE, SYSTEM::STOP_BITS);
+    system.rtu_client = std::make_shared<ModbusClient>(system.uart);
 
 	if (system.events == NULL || system.mutex_i2c == NULL || system.mutex_uart == NULL) {
 		while (true) printf("[SYSTEM] Initialisation lead to NULL!\n");
@@ -52,10 +47,11 @@ int main() {
 	
 	// TASKS
 	task_create_blink();
+	task_create_controller(&system);
 	task_create_parser(&system);
 	system.input_queue = create_local_inputs();
 	system.sdp610_queue = task_create_sdp610(system.mutex_i2c);
-	system.gmp252_queue = task_create_gmp252(system.mutex_uart, rtu_client);
+	system.gmp252_queue = task_create_gmp252(system.mutex_uart, system.rtu_client);
 
 	vTaskStartScheduler();
     while(true);

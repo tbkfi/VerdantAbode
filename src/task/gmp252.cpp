@@ -1,15 +1,14 @@
-#include <modbus_client.hpp>
-#include <modbus_register.hpp>
+
 #include <gmp252.hpp>
 
 QueueHandle_t
 task_create_gmp252
-(SemaphoreHandle_t mutex_uart, std::shared_ptr<ModbusClient> rtu_client)
+(SemaphoreHandle_t mutex_i2c, std::shared_ptr<ModbusClient> rtu_client)
 {
 	static GMP252::CTX ctx;
-	ctx.mutex = mutex_uart;
+	ctx.mutex = mutex_i2c;
 	ctx.que = xQueueCreate(GMP252::QUE_LEN, sizeof(GMP252::QUE_ELEMENT));
-	ctx.rtu_client = rtu_client;
+    ctx.rtu_client = rtu_client;
 
 	// Validation, Registration
 	if (ctx.que == NULL)
@@ -59,7 +58,7 @@ void task_gmp252(void* param)
             vTaskDelay(100);
             
             // return to the start
-            break;
+            continue;
 		}
 
         if (GMP252::DEBUG) printf("[GMP252] Instructing to Measure...\n");
@@ -76,7 +75,7 @@ void task_gmp252(void* param)
         {
             if (GMP252::DEBUG) printf("[GMP252] Mutex was not obtained.\n");
 
-            break;
+            continue;
         }
 
         if (GMP252::DEBUG) printf("[GMP252] mutex obtained. Measuring ...\n");

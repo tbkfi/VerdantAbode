@@ -21,7 +21,8 @@ QueueHandle_t task_create_sdp610(SemaphoreHandle_t mutex_i2c) {
 	vQueueAddToRegistry(ctx.que, "SDP610");
 
 	// Task
-	xTaskCreate(task_sdp610, "SDP610", SDP610::STACK_DEPTH, (void *) &ctx, SDP610::TASK_PRIORITY, NULL);
+	xTaskCreate(task_sdp610, "SDP610", SDP610::STACK_DEPTH,
+			 (void *) &ctx, SDP610::TASK_PRIORITY, NULL);
 	return ctx.que;
 }
 
@@ -67,7 +68,8 @@ void task_sdp610(void* param) {
 			}
 			else {
 			// I2C Read: Got data
-				if (SDP610::DEBUG) printf("[SDP610] Trying to obtain I2C Mutex (2/2)...\n");
+				if (SDP610::DEBUG)
+					printf("[SDP610] Trying to obtain I2C Mutex (2/2)...\n");
 
 				if (xSemaphoreTake(ctx->mutex, pdMS_TO_TICKS(100)) != pdTRUE) {
 				// Mutex unavailable
@@ -112,7 +114,9 @@ void task_sdp610(void* param) {
 						e.time_ms = pdTICKS_TO_MS(measure_start_time);
 						e.data = reading;
 						xQueueSend(ctx->que, &e, 0);
-						if (SDP610::DEBUG) printf("[%lu] SDP610: %f Pa\n", pdTICKS_TO_MS(xTaskGetTickCount()), reading);
+						if (SDP610::DEBUG)
+							printf("[%lu] SDP610: %f Pa\n",
+							pdTICKS_TO_MS(xTaskGetTickCount()), reading);
 					}
 				}
 			}

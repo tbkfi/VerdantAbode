@@ -7,9 +7,8 @@
 #include "queue.h"
 #include "semphr.h"
 
-#include "uart.hpp"
-#include "modbus_register.hpp"
-#include "modbus_client.hpp"
+#include <modbus_client.hpp>
+#include <modbus_register.hpp>
 
 //#include "system.hpp"
 //#include "pin.hpp"

@@ -5,6 +5,7 @@
 #include <modbus_client.hpp>
 #include "pico/time.h"
 
+
 ModbusClient::ModbusClient(std::shared_ptr<PicoUart> uart_) : uart(uart_) {
     platform_conf.transport = NMBS_TRANSPORT_RTU;
     platform_conf.read = uart_transport_read;

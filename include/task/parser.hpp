@@ -3,6 +3,8 @@
  *
  * Tuomo Björk
 */
+#pragma once
+
 #include "stdio.h"
 #include "FreeRTOS.h"
 #include "queue.h"
