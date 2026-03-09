@@ -31,16 +31,17 @@ namespace SYSTEM {
 	constexpr uint16_t CO2_CRITICAL = 2000; // Critical CO2 limit
 
 	constexpr uint8_t SSID_BUFF_LEN = 128;
+
 	// Event flags
-	constexpr uint8_t FLAG_CO2_HIGH       = ( 1 << 0 ); // Indicates high CO2
-	constexpr uint8_t FLAG_CO2_LOW        = ( 1 << 1 ); // Indicates low CO2
-	constexpr uint8_t FLAG_WIFI_SETUP     = ( 1 << 2 ); // Is WIFI setup active?
-	constexpr uint8_t FLAG_WIFI_CONNECTED = ( 1 << 3 ); // Wifi connetion status
+	constexpr uint32_t FLAG_CO2_HIGH       = ( 1 << 0 ); // Indicates high CO2
+	constexpr uint32_t FLAG_CO2_LOW        = ( 1 << 1 ); // Indicates low CO2
+	constexpr uint32_t FLAG_WIFI_SETUP     = ( 1 << 2 ); // Is WIFI setup active?
+	constexpr uint32_t FLAG_WIFI_CONNECTED = ( 1 << 3 ); // Wifi connetion status
+	constexpr uint32_t FLAG_VALVE_OPEN     = ( 1 << 4 ); // CO2 valve is open
 
 	struct DATA {
 	// System State
 		uint32_t co2_target;            // Target CO2 level
-		uint32_t co2_current;           // Current CO2 level
 		char* wifi_ssid[SSID_BUFF_LEN]; // Wifi SSID
 		char* wifi_pass[SSID_BUFF_LEN]; // Wifi Password
 		uint8_t wifi_ssid_pos = 0;
@@ -51,6 +52,11 @@ namespace SYSTEM {
 		QueueHandle_t input_queue;      // Local inputs
 		QueueHandle_t sdp610_queue;     // SDP610::PARAM->que
 		QueueHandle_t gmp252_queue;     // GMP252::PARAM->que
+
+		// Latest sensor values
+		int16_t  val_co2;
+		uint32_t val_pa;
+		uint16_t val_fan;
 
 		// Devices
 		std::shared_ptr<PicoUart> uart;
@@ -72,10 +78,6 @@ namespace SYSTEM {
 namespace Pin {
 	// Local Vent
 	constexpr uint8_t EXHAUST_VALVE = 32;
-
-	// UART (Main)
-	constexpr uint8_t UART_TX_MASTER = 4;
-	constexpr uint8_t UART_RX_MASTER = 5;
 
 	// UART (Simulator)
 	constexpr uint8_t UART_TX_SLAVE = 5;

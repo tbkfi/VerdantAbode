@@ -22,8 +22,12 @@ extern "C" {
 
 
 int main() {
+	timer_hw->dbgpause = 0;
+
 	// HARDWARE initialisation
 	stdio_init_all();
+	printf("<BOOT>\n");
+
 	init_i2c0();
 	init_i2c1();
 
@@ -37,9 +41,9 @@ int main() {
 	system.sdp610_queue = nullptr;
 	system.gmp252_queue = nullptr;
 
-	system.uart = std::make_shared<PicoUart>(SYSTEM::UART_NR,
-		SYSTEM::UART_TX_PIN, SYSTEM::UART_RX_PIN, SYSTEM::BAUD_RATE, SYSTEM::STOP_BITS);
+	system.uart = std::make_shared<PicoUart>(SYSTEM::UART_NR, SYSTEM::UART_TX_PIN, SYSTEM::UART_RX_PIN, SYSTEM::BAUD_RATE, SYSTEM::STOP_BITS);
 	system.rtu_client = std::make_shared<ModbusClient>(system.uart);
+
 
 	if (system.events == NULL || system.mutex_i2c == NULL || system.mutex_uart == NULL) {
 		while (true) printf("[SYSTEM] Initialisation lead to NULL!\n");

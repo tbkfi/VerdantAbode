@@ -9,6 +9,7 @@
 void action_gmp252(SYSTEM::DATA* ctx, GMP252::QUE_ELEMENT* e) {
 // Action(s) taken when a CO2 READING is received.
 	printf("[%lu] PARSER(sdp610): %d\n", e->time_ms, e->data);
+	ctx->val_co2 = e->data;
 
 	// Update local display
 	// screen.text("...");
