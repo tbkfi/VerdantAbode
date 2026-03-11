@@ -22,6 +22,7 @@
 #include "ssd1306.h"
 #include "PicoI2CBus.h"
 #include "PicoI2CDevice.h"
+#include "mio.hpp"
 
 
 namespace SYSTEM {
@@ -64,6 +65,8 @@ namespace SYSTEM {
 		float val_pa;
 		uint16_t val_fan;
 		uint16_t val_temp;
+    
+        int last_speed;
 
 		// Devices
 		std::shared_ptr<PicoUart> uart;
