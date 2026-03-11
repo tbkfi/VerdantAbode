@@ -4,6 +4,7 @@
  * Tuomo Björk
 */
 #include "action_local_inputs.hpp"
+#include "system.hpp"
 
 
 void action_local_input_regular(SYSTEM::DATA* ctx, LOCAL_INPUTS::QUE_ELEMENT* e) {
@@ -30,8 +31,15 @@ void action_local_input_regular(SYSTEM::DATA* ctx, LOCAL_INPUTS::QUE_ELEMENT* e)
 		// Unassigned
 			break;
 		case LOCAL_INPUTS::BTN3_PIN:
-		// Unassigned
+		{ // Toggle MAIN | SETUP state
+			EventBits_t events = xEventGroupGetBits(ctx->events);
+			if (events & SYSTEM::FLAG_WIFI_SETUP) {
+				xEventGroupClearBits(ctx->events, SYSTEM::FLAG_WIFI_SETUP);
+			} else {
+				xEventGroupSetBits(ctx->events, SYSTEM::FLAG_WIFI_SETUP);
+			}
 			break;
+		}
 		default:
 		// Undefined
 			break;

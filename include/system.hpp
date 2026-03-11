@@ -39,7 +39,7 @@ namespace SYSTEM {
 	// Event flags
 	constexpr uint32_t FLAG_CO2_HIGH       = ( 1 << 0 ); // Indicates high CO2
 	constexpr uint32_t FLAG_CO2_LOW        = ( 1 << 1 ); // Indicates low CO2
-	constexpr uint32_t FLAG_WIFI_SETUP     = ( 1 << 2 ); // Is WIFI setup active?
+	constexpr uint32_t FLAG_WIFI_SETUP     = ( 1 << 2 ); // WIFI setup screen?
 	constexpr uint32_t FLAG_WIFI_PFIELD    = ( 1 << 3 ); // Pass-field selected?
 	constexpr uint32_t FLAG_WIFI_CONNECTED = ( 1 << 4 ); // Wifi connetion status
 	constexpr uint32_t FLAG_VALVE_OPEN     = ( 1 << 5 ); // CO2 valve is open

@@ -4,7 +4,6 @@
  * Tuomo Björk
 */
 #include "parser.hpp"
-
 #include "system.hpp"
 
 #include "action_local_inputs.hpp"

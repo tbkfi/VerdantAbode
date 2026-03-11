@@ -19,7 +19,7 @@
 
 namespace PARSER {
 	constexpr bool DEBUG = true;
-	constexpr uint16_t INTERVAL_MS = 50;
+	constexpr uint16_t INTERVAL_MS = 25;
 	constexpr uint16_t STACK_DEPTH = 1024;
 	constexpr uint8_t TASK_PRIORITY = tskIDLE_PRIORITY + 6;
 }

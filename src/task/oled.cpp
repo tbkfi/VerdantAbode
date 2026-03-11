@@ -20,7 +20,8 @@ void task_ssd1306(void* param) {
 	while (true) {
 		vTaskDelayUntil(&last_ran, interval_ms);
 
-		flags = xEventGroupGetBits(ctx->events); if (xSemaphoreTake(ctx->mutex_i2c, pdMS_TO_TICKS(50)) != pdTRUE) {
+		flags = xEventGroupGetBits(ctx->events);
+		if (xSemaphoreTake(ctx->mutex_i2c, pdMS_TO_TICKS(50)) != pdTRUE) {
 		// Mutex unavailable
 			if (OLED::DEBUG) printf("[SSD1306] Couldn't get Mutex (I2C)!\n");
 		} else {
@@ -49,11 +50,18 @@ void view_default(SYSTEM::DATA* ctx) {
 	frag_temp(ctx);
 	frag_pa(ctx);
 	frag_wifi_status(ctx);
+
+	ctx->display->text("VIEW:  MAIN", 0, 48, 1); 
 	ctx->display->show();
 }
 
 void view_wifi_setup(SYSTEM::DATA* ctx) {
 // TODO
+	ctx->display->fill(0);
+	frag_setup_fields(ctx);
+	frag_setup_c(ctx);
+
+	ctx->display->text("VIEW:  SETUP", 0, 48, 1); 
 	ctx->display->show();
 }
 
@@ -66,7 +74,7 @@ void frag_ui(void) {
 
 void frag_co2(SYSTEM::DATA* ctx) {
 	char buffer[16];
-	snprintf(buffer, sizeof(buffer), "%d", ctx->val_co2);
+	snprintf(buffer, sizeof(buffer), "%d / %ld", ctx->val_co2, ctx->co2_target);
 	
 	ctx->display->text("CO2 :", 0, 0, 1);
 	ctx->display->text(buffer, 40, 0, 1);
@@ -96,4 +104,11 @@ void frag_wifi_status(SYSTEM::DATA* ctx) {
 	
 	ctx->display->text("WiFi:", 0, 36, 1);
 	ctx->display->text(is_connected ? "CONN." : "DISC.", 40, 36, 1); 
+}
+
+void frag_setup_c(SYSTEM::DATA* ctx) {
+}
+void frag_setup_fields(SYSTEM::DATA* ctx) {
+	ctx->display->text("SSID :", 0, 0, 1);
+	ctx->display->text("PASS :", 0, 12, 1);
 }
