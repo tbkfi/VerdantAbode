@@ -21,7 +21,7 @@ namespace CONTROLLER {
 
 	// Task settings
 	constexpr uint16_t STACK_DEPTH = 1024;
-	constexpr UBaseType_t TASK_PRIORITY = tskIDLE_PRIORITY + 3; 
+	constexpr UBaseType_t TASK_PRIORITY = tskIDLE_PRIORITY + 5; 
 }
 
 void task_controller(void *param);

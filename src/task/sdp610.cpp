@@ -114,9 +114,10 @@ void task_sdp610(void* param) {
 						e.time_ms = pdTICKS_TO_MS(measure_start_time);
 						e.data = reading;
 						xQueueSend(ctx->que, &e, 0);
-						if (SDP610::DEBUG)
+						if (SDP610::DEBUG) {
 							printf("[%lu] SDP610: %f Pa\n",
 							pdTICKS_TO_MS(xTaskGetTickCount()), reading);
+						}
 					}
 				}
 			}

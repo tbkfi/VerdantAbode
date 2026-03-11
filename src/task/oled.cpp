@@ -6,8 +6,8 @@
 #include "oled.hpp"
 #include "system.hpp"
 
-void task_create_ssd1306(UBaseType_t prio, SYSTEM::DATA* ctx) {
-	xTaskCreate(task_ssd1306, "SSD1306", OLED::STACK_DEPTH, (void *) ctx, prio, NULL);
+void task_create_ssd1306(SYSTEM::DATA* ctx) {
+	xTaskCreate(task_ssd1306, "SSD1306", OLED::STACK_DEPTH, (void *) ctx, OLED::TASK_PRIO, NULL);
 }
 
 void task_ssd1306(void* param) {
@@ -17,13 +17,10 @@ void task_ssd1306(void* param) {
 	TickType_t interval_ms = pdMS_TO_TICKS(OLED::INTERVAL_MS);
 
 	uint32_t flags = 0;
-	printf("TASKINIT\n");
 	while (true) {
 		vTaskDelayUntil(&last_ran, interval_ms);
-		printf("OLED\n");
 
-		flags = xEventGroupGetBits(ctx->events);
-		if (xSemaphoreTake(ctx->mutex_i2c, pdMS_TO_TICKS(50)) != pdTRUE) {
+		flags = xEventGroupGetBits(ctx->events); if (xSemaphoreTake(ctx->mutex_i2c, pdMS_TO_TICKS(50)) != pdTRUE) {
 		// Mutex unavailable
 			if (OLED::DEBUG) printf("[SSD1306] Couldn't get Mutex (I2C)!\n");
 		} else {
@@ -73,7 +70,7 @@ void frag_co2(SYSTEM::DATA* ctx) {
 	
 	ctx->display->text("CO2 :", 0, 0, 1);
 	ctx->display->text(buffer, 40, 0, 1);
-	ctx->display->text("ppm", 85, 0, 1);
+	//ctx->display->text("ppm", 85, 0, 1);
 }
 
 void frag_temp(SYSTEM::DATA* ctx) {
@@ -82,7 +79,7 @@ void frag_temp(SYSTEM::DATA* ctx) {
 	
 	ctx->display->text("Temp:", 0, 12, 1);
 	ctx->display->text(buffer, 40, 12, 1);
-	ctx->display->text("C", 85, 12, 1); 
+	//ctx->display->text("C", 85, 12, 1); 
 }
 
 void frag_pa(SYSTEM::DATA* ctx) {
@@ -91,12 +88,12 @@ void frag_pa(SYSTEM::DATA* ctx) {
 	
 	ctx->display->text("DP  :", 0, 24, 1);
 	ctx->display->text(buffer, 40, 24, 1);
-	ctx->display->text("Pa", 85, 24, 1);
+	//ctx->display->text("Pa", 85, 24, 1);
 }
 
 void frag_wifi_status(SYSTEM::DATA* ctx) {
 	bool is_connected = (xEventGroupGetBits(ctx->events) & SYSTEM::FLAG_WIFI_CONNECTED);
 	
 	ctx->display->text("WiFi:", 0, 36, 1);
-	ctx->display->text(is_connected ? "CONNECTED" : "DISCONNECTED", 40, 36, 1); 
+	ctx->display->text(is_connected ? "CONN." : "DISC.", 40, 36, 1); 
 }

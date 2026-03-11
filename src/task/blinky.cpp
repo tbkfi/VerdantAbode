@@ -6,8 +6,12 @@
 #include "blinky.hpp"
 
 
-void task_create_blinky(UBaseType_t task_prio) {
-	static BLINKY::CTX ctx = { .pin = BLINKY::PIN, .delay_ms = BLINKY::DELAY_MS };
+void task_create_blinky(void) {
+	static BLINKY::CTX ctx = {
+		.pin = BLINKY::PIN,
+		.delay_ms = BLINKY::DELAY_MS
+	};
+
 	xTaskCreate(task_blinky, "LED_1", 256, (void *) &ctx, BLINKY::TASK_PRIO, NULL);
 }
 

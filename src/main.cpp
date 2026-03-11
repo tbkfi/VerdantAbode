@@ -50,8 +50,8 @@ int main() {
 	system.display = std::make_shared<ssd1306>(system.i2c_dev);
 
 	// TEST SCREEN
-	system.display->fill(1);
-	system.display->show();
+	//system.display->fill(1);
+	//system.display->show();
 
 
 	if (system.events == NULL || system.mutex_i2c == NULL || system.mutex_uart == NULL) {
@@ -59,9 +59,10 @@ int main() {
 	}
 	
 	// TASKS
-	task_create_blink();
+	task_create_blinky();
 	task_create_parser(&system);
 	task_create_controller(&system);
+	task_create_ssd1306(&system);
 	system.input_queue = create_local_inputs();
 	system.sdp610_queue = task_create_sdp610(system.mutex_i2c);
 	system.gmp252_queue = task_create_gmp252(system.mutex_uart, system.rtu_client);

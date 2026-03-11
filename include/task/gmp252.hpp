@@ -36,7 +36,7 @@ namespace GMP252 {
 	constexpr bool DEBUG = false; // Print debugs?
 	constexpr uint16_t POLL_INTERVAL_MS = 1 * 1000;
 
-	constexpr UBaseType_t TASK_PRIORITY = tskIDLE_PRIORITY + 2;
+	constexpr UBaseType_t TASK_PRIORITY = tskIDLE_PRIORITY + 3;
 	constexpr uint16_t STACK_DEPTH = 2048;
 	constexpr uint8_t QUE_LEN = 8;
 	constexpr uint16_t INTEGRATION_TIME_MS = 12 * 1000; // Typical: lt 12s --> 2min

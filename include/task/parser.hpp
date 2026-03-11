@@ -19,7 +19,7 @@
 namespace PARSER {
 	constexpr bool DEBUG = true;
 	constexpr uint16_t STACK_DEPTH = 1024;
-	constexpr uint8_t TASK_PRIORITY = tskIDLE_PRIORITY + 1;
+	constexpr uint8_t TASK_PRIORITY = tskIDLE_PRIORITY + 5;
 }
 
 void task_parser(void* param);
