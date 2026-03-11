@@ -57,6 +57,7 @@ namespace SYSTEM {
 		QueueHandle_t input_queue;      // Local inputs
 		QueueHandle_t sdp610_queue;     // SDP610::PARAM->que
 		QueueHandle_t gmp252_queue;     // GMP252::PARAM->que
+        QueueHandle_t mio_queue;
 
 		// Latest sensor values
 		int16_t  val_co2;

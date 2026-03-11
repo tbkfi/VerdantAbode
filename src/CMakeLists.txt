@@ -11,6 +11,7 @@ add_executable(
 	task/sdp610.cpp
 	task/gmp252.cpp
 	task/oled.cpp
+    task/mio.cpp
 
 	# Parser Actions
 	action/action_local_inputs.cpp
