@@ -6,20 +6,28 @@
 #include "blinky.hpp"
 
 
-void task_create_blink(void) {
-	static BLINKY::CTX ctx = { .pin = BLINKY::PIN, .delay_ms = BLINKY::DELAY_MS };
-	xTaskCreate(task_blink, "LED_1", 256, (void *) &ctx, tskIDLE_PRIORITY + 1, NULL);
+void task_create_blinky(void) {
+	static BLINKY::CTX ctx = {
+		.pin = BLINKY::PIN,
+		.delay_ms = BLINKY::DELAY_MS
+	};
+
+	xTaskCreate(task_blinky, "LED_1", 256, (void *) &ctx, BLINKY::TASK_PRIO, NULL);
 }
 
-void task_blink(void *param) {
+void task_blinky(void *param) {
 	BLINKY::CTX *ctx = (BLINKY::CTX*) param;
 
     gpio_init(ctx->pin);
     gpio_set_dir(ctx->pin, GPIO_OUT);
 
+	TickType_t last_ran = xTaskGetTickCount();
+	TickType_t poll_time = pdMS_TO_TICKS(BLINKY::DELAY_MS);
+
     while (true) {
-        gpio_put(ctx->pin, 1); vTaskDelay(ctx->delay_ms);
-        gpio_put(ctx->pin, 0); vTaskDelay(ctx->delay_ms);
+		vTaskDelayUntil(&last_ran, poll_time);
+
+        gpio_put(ctx->pin, !gpio_get(ctx->pin));
 		printf("[%lu] blink\n", pdTICKS_TO_MS(xTaskGetTickCount()));
     }
 }

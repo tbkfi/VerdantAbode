@@ -25,8 +25,12 @@ void task_parser(void* param) {
 	SDP610::QUE_ELEMENT e_sdp610;
 	GMP252::QUE_ELEMENT e_gmp252;
 	
+	TickType_t last_ran = xTaskGetTickCount();
+	TickType_t interval = pdMS_TO_TICKS(PARSER::INTERVAL_MS);
+
 	uint32_t flags = 0;
 	while (true) {
+		vTaskDelayUntil(&last_ran, interval);
 		flags = xEventGroupGetBits(ctx->events);
 
 		// Local inputs

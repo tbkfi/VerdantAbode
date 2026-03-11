@@ -1,5 +1,3 @@
-// UART driver
-
 //
 // Created by Keijo Länsikunnas on 4.2.2024.
 //

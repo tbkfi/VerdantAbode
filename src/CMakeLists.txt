@@ -5,9 +5,9 @@ add_executable(
 
 	# FreeRTOS tasks
 	task/blinky.cpp
-	task/local_inputs.cpp
-	task/controller.cpp
 	task/parser.cpp
+	task/controller.cpp
+	task/local_inputs.cpp
 	task/sdp610.cpp
 	task/gmp252.cpp
 	task/oled.cpp

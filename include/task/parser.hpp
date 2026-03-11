@@ -14,12 +14,14 @@
 #include "local_inputs.hpp"
 #include "sdp610.hpp"
 #include "gmp252.hpp"
+#include <cstdint>
 
 
 namespace PARSER {
 	constexpr bool DEBUG = true;
+	constexpr uint16_t INTERVAL_MS = 50;
 	constexpr uint16_t STACK_DEPTH = 1024;
-	constexpr uint8_t TASK_PRIORITY = tskIDLE_PRIORITY + 1;
+	constexpr uint8_t TASK_PRIORITY = tskIDLE_PRIORITY + 6;
 }
 
 void task_parser(void* param);

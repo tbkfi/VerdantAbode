@@ -25,7 +25,7 @@ namespace SDP610 {
 	constexpr uint8_t CMD_MEASURE = 0xF1;
 	constexpr uint16_t POLL_INTERVAL_MS = 1 * 1000;
 
-	constexpr UBaseType_t TASK_PRIORITY = tskIDLE_PRIORITY + 2;
+	constexpr UBaseType_t TASK_PRIORITY = tskIDLE_PRIORITY + 3;
 	constexpr uint16_t STACK_DEPTH = 2048;
 	constexpr uint8_t QUE_LEN = 8;
 	constexpr uint32_t I2C_TIMEOUT_US = 10 * 1000;
@@ -42,7 +42,7 @@ namespace SDP610 {
 	struct QUE_ELEMENT {
 	// Individual measurements
 		uint32_t time_ms;
-		int16_t data;
+		float data;
 	};
 }
 
