@@ -22,7 +22,7 @@ namespace FAN {
 	constexpr bool DEBUG = false; // Print debugs?
 	constexpr uint16_t POLL_INTERVAL_MS = 1 * 1000;
 
-	constexpr UBaseType_t TASK_PRIORITY = tskIDLE_PRIORITY + 2;
+	constexpr UBaseType_t TASK_PRIORITY = tskIDLE_PRIORITY + 10;
 	constexpr uint16_t STACK_DEPTH = 2048;
 	constexpr uint8_t QUE_LEN = 8;
     

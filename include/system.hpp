@@ -67,7 +67,6 @@ namespace SYSTEM {
 		float val_pa;
 
 		uint16_t val_fan;
-		uint16_t val_temp;
     
 		// Devices
 		std::shared_ptr<PicoUart> uart;
