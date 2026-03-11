@@ -34,7 +34,7 @@ namespace GMP252 {
     constexpr uint16_t ADDRESS = 240;
 
 	constexpr bool DEBUG = false; // Print debugs?
-	constexpr uint16_t POLL_INTERVAL_MS = 1 * 1000;
+	constexpr uint16_t POLL_INTERVAL_MS = 500;
 
 	constexpr UBaseType_t TASK_PRIORITY = tskIDLE_PRIORITY + 3;
 	constexpr uint16_t STACK_DEPTH = 2048;

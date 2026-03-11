@@ -3,6 +3,8 @@
  *
  * Matías Villa-Lemes
 */
+#pragma once
+
 #include <stdint.h>
 #include <stdio.h>
 

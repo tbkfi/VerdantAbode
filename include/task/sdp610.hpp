@@ -23,7 +23,7 @@ namespace SDP610 {
 	inline i2c_inst_t* const I2C_UNIT = i2c1;
 	constexpr unsigned ADDR = 0x40;
 	constexpr uint8_t CMD_MEASURE = 0xF1;
-	constexpr uint16_t POLL_INTERVAL_MS = 1 * 1000;
+	constexpr uint16_t POLL_INTERVAL_MS = 500;
 
 	constexpr UBaseType_t TASK_PRIORITY = tskIDLE_PRIORITY + 3;
 	constexpr uint16_t STACK_DEPTH = 2048;

@@ -34,22 +34,22 @@ void task_parser(void* param) {
 		vTaskDelayUntil(&last_ran, interval);
 		flags = xEventGroupGetBits(ctx->events);
 
-		// Local inputs
 		if (ctx->input_queue != nullptr && xQueueReceive(ctx->input_queue, &e_local_input, 0) == pdTRUE) {
+		// Local inputs
 			//if (flags & SYSTEM::FLAG_WIFI_SETUP) action_wifi_setup(ctx, &e_local_input);
 			//else action_local_input_regular(ctx, &e_local_input);
 			action_local_input_regular(ctx, &e_local_input);
 		}
-		// SDP610 for Pa
 		if (ctx->sdp610_queue != nullptr && xQueueReceive(ctx->sdp610_queue, &e_sdp610, 0) == pdTRUE) {
+		// SDP610 for Pa
 			action_sdp610(ctx, &e_sdp610);
 		}
-		// GMP252 for CO2
 		if (ctx->gmp252_queue != nullptr && xQueueReceive(ctx->gmp252_queue, &e_gmp252, 0) == pdTRUE) {
+		// GMP252 for CO2
 			action_gmp252(ctx, &e_gmp252);
 		}
-		// HMP60 for Temperature
 		if (ctx->hmp60_queue != nullptr && xQueueReceive(ctx->hmp60_queue, &e_hmp60, 0) == pdTRUE) {
+		// HMP60 for Temperature
 			action_hmp60(ctx, &e_hmp60);
 		}
 	}
