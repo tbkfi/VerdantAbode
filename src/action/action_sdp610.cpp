@@ -10,5 +10,5 @@ void action_sdp610(SYSTEM::DATA* ctx, SDP610::QUE_ELEMENT* e) {
 // Action(s) taken when a PRESSURE READING is received.
 	printf("[%lu] PARSER(sdp610): %f\n", e->time_ms, e->data);
 
-	if (ctx->val_pa != 0) ctx->val_pa = e->data;
+	ctx->val_pa = e->data;
 }

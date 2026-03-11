@@ -61,9 +61,9 @@ namespace SYSTEM {
 
 		// Latest sensor values
 		int16_t  val_co2;
+		float val_temp;
 		float val_pa;
 		int16_t val_fan;
-		int16_t val_temp;
 
 		// Devices
 		std::shared_ptr<PicoUart> uart;

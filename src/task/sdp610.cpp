@@ -45,7 +45,7 @@ void task_sdp610(void* param) {
 
 		if (SDP610::DEBUG) printf("[SDP610] Trying to obtain I2C Mutex (1/2)...\n");
 
-		if (xSemaphoreTake(ctx->mutex, pdMS_TO_TICKS(25)) != pdTRUE) {
+		if (xSemaphoreTake(ctx->mutex, pdMS_TO_TICKS(50)) != pdTRUE) {
 		// Mutex unavailable
 			if (SDP610::DEBUG) printf("[SDP610] I2C not free!\n");
 		}
@@ -71,7 +71,7 @@ void task_sdp610(void* param) {
 				if (SDP610::DEBUG)
 					printf("[SDP610] Trying to obtain I2C Mutex (2/2)...\n");
 
-				if (xSemaphoreTake(ctx->mutex, pdMS_TO_TICKS(100)) != pdTRUE) {
+				if (xSemaphoreTake(ctx->mutex, pdMS_TO_TICKS(50)) != pdTRUE) {
 				// Mutex unavailable
 					if (SDP610::DEBUG) printf("[SDP610] I2C not free!\n");
 				}

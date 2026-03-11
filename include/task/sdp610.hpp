@@ -29,7 +29,7 @@ namespace SDP610 {
 	constexpr uint16_t STACK_DEPTH = 2048;
 	constexpr uint8_t QUE_LEN = 8;
 	constexpr uint32_t I2C_TIMEOUT_US = 10 * 1000;
-	constexpr uint8_t INTEGRATION_TIME_MS = 8;          // Typical: 4.6ms
+	constexpr uint8_t INTEGRATION_TIME_MS = 15;          // Typical: 4.6ms
 	constexpr uint8_t SCALE_FACTOR = 240;               // 60 | 240 | 1200 (depend on SKU)
 	constexpr float CORRECTION_FACTOR = 966.f / 1016.f; // Ambient % Calibration
 
