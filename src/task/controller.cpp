@@ -41,12 +41,14 @@ void task_controller(void* param) {
 		else if (ctx->val_co2 >= SYSTEM::CO2_CRITICAL) {
 		// CO2 Exceeds CRITICAL target
 			valve(false);
-			fan(100);
+			//fan(100);
+            fan_speed_target(ctx, 1000, 5);
 		}
 		else if (ctx->val_co2 > ctx->co2_target) {
 		// CO2 Exceeds NORMAL target
 			valve(false);
-			fan(20);
+            fan_speed_target(ctx, 200, 5);
+			// fan(20);
 		}
 		else if (ctx->val_co2 < ctx->co2_target) {
 		// CO2 below target

@@ -40,7 +40,7 @@ namespace SYSTEM {
 	// Event flags
 	constexpr uint32_t FLAG_CO2_HIGH       = ( 1 << 0 ); // Indicates high CO2
 	constexpr uint32_t FLAG_CO2_LOW        = ( 1 << 1 ); // Indicates low CO2
-	constexpr uint32_t FLAG_WIFI_SETUP     = ( 1 << 2 ); // Is WIFI setup active?
+	constexpr uint32_t FLAG_WIFI_SETUP     = ( 1 << 2 ); // WIFI setup screen?
 	constexpr uint32_t FLAG_WIFI_PFIELD    = ( 1 << 3 ); // Pass-field selected?
 	constexpr uint32_t FLAG_WIFI_CONNECTED = ( 1 << 4 ); // Wifi connetion status
 	constexpr uint32_t FLAG_VALVE_OPEN     = ( 1 << 5 ); // CO2 valve is open
@@ -59,15 +59,15 @@ namespace SYSTEM {
 		QueueHandle_t sdp610_queue;     // SDP610::PARAM->que
 		QueueHandle_t gmp252_queue;     // GMP252::PARAM->que
         QueueHandle_t mio_queue;
+		QueueHandle_t hmp60_queue;      // HMP60::PARAM->que
 
 		// Latest sensor values
 		int16_t  val_co2;
 		float val_pa;
+
 		uint16_t val_fan;
 		uint16_t val_temp;
     
-        int last_speed;
-
 		// Devices
 		std::shared_ptr<PicoUart> uart;
 		std::shared_ptr<ModbusClient> rtu_client;

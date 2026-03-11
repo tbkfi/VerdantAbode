@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <memory>
+#include <deque>
 
 #include "FreeRTOS.h"
 #include "queue.h"
@@ -10,10 +11,7 @@
 #include <modbus_client.hpp>
 #include <modbus_register.hpp>
 
-
-void task_mio(void *param);
-QueueHandle_t task_create_mio
-(SemaphoreHandle_t mutex_, std::shared_ptr<ModbusClient> rtu_client);
+#include "system.hpp"
 
 namespace FAN {
     namespace REGISTER {
@@ -27,6 +25,7 @@ namespace FAN {
 	constexpr UBaseType_t TASK_PRIORITY = tskIDLE_PRIORITY + 2;
 	constexpr uint16_t STACK_DEPTH = 2048;
 	constexpr uint8_t QUE_LEN = 8;
+    
 
 	typedef struct {
 	// Task Context
@@ -49,11 +48,16 @@ namespace FAN {
             } \
         } while(0)
 
-    void dbg_print(__VA_ARGS__)
-    {
+    void dbg_print(__VA_ARGS__) {
         if (DEBUG)
             printf("[GMP252]");
             printf(__VA_ARGS__);
     }
     #endif
 }
+
+void task_mio(void *param);
+QueueHandle_t task_create_mio
+(SemaphoreHandle_t mutex_uart, std::shared_ptr<ModbusClient> rtu_client);
+
+void fan_speed_target(void* ctx, int target, int steps);

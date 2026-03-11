@@ -8,16 +8,19 @@ add_executable(
 	task/parser.cpp
 	task/controller.cpp
 	task/local_inputs.cpp
+	task/oled.cpp
 	task/sdp610.cpp
 	task/gmp252.cpp
 	task/oled.cpp
     task/mio.cpp
+	task/hmp60.cpp
 
 	# Parser Actions
 	action/action_local_inputs.cpp
 	#action/action_wifi_setup.cpp
 	action/action_sdp610.cpp
 	action/action_gmp252.cpp
+	action/action_hmp60.cpp
 
 	# Libraries
 	modbus/uart.cpp

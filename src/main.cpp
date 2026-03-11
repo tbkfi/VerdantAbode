@@ -17,10 +17,12 @@ extern "C" {
 #include "parser.hpp"
 #include "controller.hpp"
 #include "local_inputs.hpp"
+#include "oled.hpp"
 #include "sdp610.hpp"
 #include "gmp252.hpp"
 #include "oled.hpp"
 #include "mio.hpp"
+#include "hmp60.hpp"
 
 
 int main() {
@@ -69,6 +71,7 @@ int main() {
 	system.sdp610_queue = task_create_sdp610(system.mutex_i2c);
 	system.gmp252_queue = task_create_gmp252(system.mutex_uart, system.rtu_client);
     system.mio_queue = task_create_mio(system.mutex_uart, system.rtu_client);
+	system.hmp60_queue = task_create_hmp60(system.mutex_uart, system.rtu_client);
 
 	vTaskStartScheduler();
     while(true);

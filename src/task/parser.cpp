@@ -4,13 +4,13 @@
  * Tuomo Björk
 */
 #include "parser.hpp"
-
 #include "system.hpp"
 
 #include "action_local_inputs.hpp"
 //#include "action_wifi_setup.hpp"
 #include "action_sdp610.hpp"
 #include "action_gmp252.hpp"
+#include "action_hmp60.hpp"
 
 
 void task_create_parser(SYSTEM::DATA* ctx) {
@@ -24,6 +24,7 @@ void task_parser(void* param) {
 	LOCAL_INPUTS::QUE_ELEMENT e_local_input;
 	SDP610::QUE_ELEMENT e_sdp610;
 	GMP252::QUE_ELEMENT e_gmp252;
+	HMP60::QUE_ELEMENT e_hmp60;
 	
 	TickType_t last_ran = xTaskGetTickCount();
 	TickType_t interval = pdMS_TO_TICKS(PARSER::INTERVAL_MS);
@@ -46,6 +47,10 @@ void task_parser(void* param) {
 		// GMP252 for CO2
 		if (ctx->gmp252_queue != nullptr && xQueueReceive(ctx->gmp252_queue, &e_gmp252, 0) == pdTRUE) {
 			action_gmp252(ctx, &e_gmp252);
+		}
+		// HMP60 for Temperature
+		if (ctx->hmp60_queue != nullptr && xQueueReceive(ctx->hmp60_queue, &e_hmp60, 0) == pdTRUE) {
+			action_hmp60(ctx, &e_hmp60);
 		}
 	}
 }

@@ -22,12 +22,15 @@ void task_blinky(void *param) {
     gpio_set_dir(ctx->pin, GPIO_OUT);
 
 	TickType_t last_ran = xTaskGetTickCount();
-	TickType_t poll_time = pdMS_TO_TICKS(BLINKY::DELAY_MS);
+	TickType_t interval1 = pdMS_TO_TICKS(BLINKY::DELAY_MS);
+	TickType_t interval2 = pdMS_TO_TICKS(BLINKY::DELAY_MS/10);
 
     while (true) {
-		vTaskDelayUntil(&last_ran, poll_time);
-
+		vTaskDelayUntil(&last_ran, interval1);
         gpio_put(ctx->pin, !gpio_get(ctx->pin));
-		printf("[%lu] blink\n", pdTICKS_TO_MS(xTaskGetTickCount()));
+		printf("[%lu] blink (1/2)\n", pdTICKS_TO_MS(xTaskGetTickCount()));
+		vTaskDelayUntil(&last_ran, interval2);
+        gpio_put(ctx->pin, !gpio_get(ctx->pin));
+		printf("[%lu] blink (2/2)\n", pdTICKS_TO_MS(xTaskGetTickCount()));
     }
 }
