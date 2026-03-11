@@ -83,7 +83,7 @@ void frag_co2(SYSTEM::DATA* ctx) {
 
 void frag_temp(SYSTEM::DATA* ctx) {
 	char buffer[16];
-	snprintf(buffer, sizeof(buffer), "%d", ctx->val_temp);
+	snprintf(buffer, sizeof(buffer), "%.2f C", ctx->val_temp);
 	
 	ctx->display->text("Temp:", 0, 12, 1);
 	ctx->display->text(buffer, 40, 12, 1);
@@ -92,7 +92,7 @@ void frag_temp(SYSTEM::DATA* ctx) {
 
 void frag_pa(SYSTEM::DATA* ctx) {
 	char buffer[16];
-	snprintf(buffer, sizeof(buffer), "%.4f", ctx->val_pa); 
+	snprintf(buffer, sizeof(buffer), "%.2fE-3", ctx->val_pa*1000); 
 	
 	ctx->display->text("DP  :", 0, 24, 1);
 	ctx->display->text(buffer, 40, 24, 1);

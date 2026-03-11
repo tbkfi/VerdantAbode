@@ -26,10 +26,10 @@ QueueHandle_t task_create_hmp60 (SemaphoreHandle_t mutex_uart,
 
 void task_hmp60(void* param) {
 	HMP60::CTX* ctx = (HMP60::CTX*) param;
-	ModbusRegister hmp60_t (ctx->rtu_client, HMP60::ADDRESS, HMP60::REGISTER::T);
-
-	int16_t reading_raw = 0;
 	HMP60::QUE_ELEMENT e;
+
+	ModbusRegister reg_lsw(ctx->rtu_client, HMP60::ADDRESS, HMP60::REGISTER::T);
+	ModbusRegister reg_msw(ctx->rtu_client, HMP60::ADDRESS, HMP60::REGISTER::T + 1);
 
 	TickType_t last_ran = xTaskGetTickCount();
 	const TickType_t poll_time = pdMS_TO_TICKS(HMP60::POLL_INTERVAL_MS);
@@ -45,14 +45,23 @@ void task_hmp60(void* param) {
 
 		// Read Measurement
 		if (HMP60::DEBUG) printf("[HMP60] Attempting to read...\n");
-
-		reading_raw = (int16_t) hmp60_t.read();
+		e.time_ms = pdTICKS_TO_MS(xTaskGetTickCount());
+		uint16_t word_lsw = reg_lsw.read();
+		uint16_t word_msw = reg_msw.read();
 		xSemaphoreGive(ctx->mutex);
 
+		// LSW+MSW
+		uint32_t lsw_msw = ( (uint32_t)word_msw << 16) | word_lsw;
+
+		// Reading is 'float'
+		float reading;
+		memcpy(&reading, &lsw_msw, sizeof(float));
+
+		// Set element
 		e.time_ms = pdTICKS_TO_MS(xTaskGetTickCount());
-		e.data = reading_raw;
+		e.data = reading;
 
 		xQueueSend(ctx->que, &e, 0);
-		if (HMP60::DEBUG) printf("[%lu] HMP60: %d ppm\n", e.time_ms, e.data);
+		if (HMP60::DEBUG) printf("[%lu] HMP60: %.2f C\n", e.time_ms, e.data);
 	}
 }

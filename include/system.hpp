@@ -63,6 +63,7 @@ namespace SYSTEM {
 
 		// Latest sensor values
 		int16_t  val_co2;
+		float val_temp;
 		float val_pa;
 
 		uint16_t val_fan;

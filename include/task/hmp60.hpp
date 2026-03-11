@@ -9,6 +9,7 @@
 
 #include <stdint.h>
 #include <memory>
+#include <bit>
 
 #include "FreeRTOS.h"
 #include "queue.h"
@@ -19,15 +20,15 @@
 
 
 namespace HMP60 {
-	constexpr bool DEBUG = true; // Print debugs?
+	constexpr bool DEBUG = false; // Print debugs?
 
 	namespace REGISTER {
 		// docs: https://www.fondriest.com/pdf/vaisala_hmp60-110_manual.pdf
-		constexpr uint32_t T = 0x0003;
+		constexpr uint32_t T = 0x0002;
 	};
 
 	constexpr uint16_t ADDRESS = 241;
-	constexpr uint16_t POLL_INTERVAL_MS = 1500;
+	constexpr uint16_t POLL_INTERVAL_MS = 500;
 	//constexpr uint16_t INTEGRATION_TIME_MS = 12 * 1000;
 
 	constexpr UBaseType_t TASK_PRIORITY = tskIDLE_PRIORITY + 3;
@@ -44,7 +45,7 @@ namespace HMP60 {
 	struct QUE_ELEMENT {
 	// Individual measurements
 		uint32_t time_ms;
-		int16_t data;
+		float data;
 	};
 }
 

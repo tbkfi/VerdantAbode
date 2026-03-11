@@ -45,6 +45,7 @@ int main() {
 	system.sdp610_queue = nullptr;
 	system.gmp252_queue = nullptr;
     system.mio_queue = nullptr;
+	system.hmp60_queue = nullptr;
 
 	system.uart = std::make_shared<PicoUart>(SYSTEM::UART_NR, SYSTEM::UART_TX_PIN, SYSTEM::UART_RX_PIN, SYSTEM::BAUD_RATE, SYSTEM::STOP_BITS);
 	system.rtu_client = std::make_shared<ModbusClient>(system.uart);
