@@ -1,7 +1,13 @@
+/* VerdantAbode
+ * oled.cpp
+ *
+ * Matías Villa-Lemes
+*/
 #include "oled.hpp"
+#include "system.hpp"
 
-void task_create_ssd1306(SYSTEM::DATA* ctx) {
-	xTaskCreate(task_ssd1306, "SSD1306", OLED::STACK_DEPTH, (void *) ctx, OLED::TASK_PRIORITY, NULL);
+void task_create_ssd1306(UBaseType_t prio, SYSTEM::DATA* ctx) {
+	xTaskCreate(task_ssd1306, "SSD1306", OLED::STACK_DEPTH, (void *) ctx, prio, NULL);
 }
 
 void task_ssd1306(void* param) {
@@ -11,15 +17,10 @@ void task_ssd1306(void* param) {
 	TickType_t interval_ms = pdMS_TO_TICKS(OLED::INTERVAL_MS);
 
 	uint32_t flags = 0;
+	printf("TASKINIT\n");
 	while (true) {
 		vTaskDelayUntil(&last_ran, interval_ms);
-
-		// DEMO VALUES
-		int16_t current_co2 = 400;
-		uint32_t current_temp = 22;
-		uint32_t current_pa = 101325;
-		bool is_wifi_connected = true;
-		// DEMO VALUES
+		printf("OLED\n");
 
 		flags = xEventGroupGetBits(ctx->events);
 		if (xSemaphoreTake(ctx->mutex_i2c, pdMS_TO_TICKS(50)) != pdTRUE) {
@@ -31,54 +32,71 @@ void task_ssd1306(void* param) {
 
 			if (xEventGroupGetBits(ctx->events) & SYSTEM::FLAG_WIFI_SETUP) {
 			// SETUP SCREEN
-				// draw wifi_setup screen
+				if (OLED::DEBUG) printf("[SSD1306] view: wifi_setup\n");
+				view_wifi_setup(ctx);
 			} else {
 			// NORMAL SCREEN
-				frag_ui();
-				frag_co2(ctx->val_co2);
-				frag_temp(ctx->val_temp);
-				frag_pa(ctx->val_pa);
-				frag_wifi_status(false);
-				//display.show(); 
+				if (OLED::DEBUG) printf("[SSD1306] view: default\n");
+				view_default(ctx);
 			}
 			xSemaphoreGive(ctx->mutex_i2c);
 		}
 	}
 }
 
-void ssd1306_screen() {
-	//display.fill(0);
-	//display.text("[Co2]: ", 0, 0, 1);
-	//display.text("[Temp]: ", 0, 13, 1);
-	//display.text("[P]: ", 0, 26, 1);
-	//display.text("[WiFi]: ", 0, 39, 1);
-	//display.text("[A <- -> B]", 0, 52, 1);
+
+void view_default(SYSTEM::DATA* ctx) {
+	ctx->display->fill(0);
+	frag_ui();
+	frag_co2(ctx);
+	frag_temp(ctx);
+	frag_pa(ctx);
+	frag_wifi_status(ctx);
+	ctx->display->show();
+}
+
+void view_wifi_setup(SYSTEM::DATA* ctx) {
+// TODO
+	ctx->display->show();
 }
 
 void frag_ui(void) {
+// TODO: Prettyfication
+	// draw some outlines
+	// button borders
+	// etc.
 }
 
-void frag_co2(int16_t val) {
+void frag_co2(SYSTEM::DATA* ctx) {
 	char buffer[16];
-	snprintf(buffer, sizeof(buffer), "%d", val);
-	//display.text(buffer, 50, 0, 1);
-	//display.text("ppm", 70, 0, 1);
+	snprintf(buffer, sizeof(buffer), "%d", ctx->val_co2);
+	
+	ctx->display->text("CO2 :", 0, 0, 1);
+	ctx->display->text(buffer, 40, 0, 1);
+	ctx->display->text("ppm", 85, 0, 1);
 }
 
-void frag_temp(uint32_t val) {
+void frag_temp(SYSTEM::DATA* ctx) {
 	char buffer[16];
-	snprintf(buffer, sizeof(buffer), "%lu", val);
-	//display.text(buffer, 50, 13, 1);
-	//display.text("C", 70, 13, 1);
+	snprintf(buffer, sizeof(buffer), "%d", ctx->val_temp);
+	
+	ctx->display->text("Temp:", 0, 12, 1);
+	ctx->display->text(buffer, 40, 12, 1);
+	ctx->display->text("C", 85, 12, 1); 
 }
 
-void frag_pa(uint32_t val) {
+void frag_pa(SYSTEM::DATA* ctx) {
 	char buffer[16];
-	snprintf(buffer, sizeof(buffer), "%lu", val);
-	//display.text(buffer, 50, 26, 1);
-	//display.text("Pa", 70, 26, 1);
+	snprintf(buffer, sizeof(buffer), "%.4f", ctx->val_pa); 
+	
+	ctx->display->text("DP  :", 0, 24, 1);
+	ctx->display->text(buffer, 40, 24, 1);
+	ctx->display->text("Pa", 85, 24, 1);
 }
 
-void frag_wifi_status(bool stat) {
-	//display.text(stat ? "ON" : "OFF", 50, 39, 1); 
+void frag_wifi_status(SYSTEM::DATA* ctx) {
+	bool is_connected = (xEventGroupGetBits(ctx->events) & SYSTEM::FLAG_WIFI_CONNECTED);
+	
+	ctx->display->text("WiFi:", 0, 36, 1);
+	ctx->display->text(is_connected ? "CONNECTED" : "DISCONNECTED", 40, 36, 1); 
 }

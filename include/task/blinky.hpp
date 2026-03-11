@@ -13,6 +13,7 @@
 namespace BLINKY {
 	constexpr uint8_t PIN = 20;
 	constexpr uint16_t DELAY_MS = 1250;
+	constexpr uint8_t TASK_PRIO = 8;
 
 	struct CTX {
 		uint8_t pin;
@@ -21,5 +22,5 @@ namespace BLINKY {
 
 }
 
-void task_blink(void *param);
-void task_create_blink(void);
+void task_blinky(void *param);
+void task_create_blinky(void);
