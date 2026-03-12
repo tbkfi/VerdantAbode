@@ -8,45 +8,12 @@
 #include "projdefs.h"
 
 
-bool EEPROM::read(uint16_t address, uint8_t *buffer, int count) {
-	uint8_t mem_address[2];
-	mem_address[0] = (address >> 8) & 0xFF;
-	mem_address[1] = address & 0xFF;
-
-	int response = i2c_write_timeout_us(EEPROM::I2C, EEPROM::ADDRESS, mem_address, 2, true, EEPROM::I2C_TIMEOUT_US);
-	if (response == 2) {
-		response = i2c_read_timeout_us(EEPROM::I2C, EEPROM::ADDRESS, buffer, count, false, EEPROM::I2C_TIMEOUT_US);
-		if (response == count) return true;
-	}
-
-	printf("[EEPROM] (read): fail (%d)!\n", response);
-	return false;
-}
-
-bool EEPROM::write(uint16_t address, uint8_t *buffer, int count) {
-	uint8_t data[EEPROM::PAGE_SIZE + 2]; 
-	if (count > EEPROM::PAGE_SIZE) return false;
-
-	data[0] = (address >> 8) & 0xFF;
-	data[1] = address & 0xFF;
-	memcpy(&data[2], buffer, count);
-
-	int response = i2c_write_timeout_us(EEPROM::I2C, EEPROM::ADDRESS, data, 2 + count, false, EEPROM::I2C_TIMEOUT_US);
-	vTaskDelay(pdMS_TO_TICKS(EEPROM::OP_DELAY_MS));
-
-	if (response == 2 + count) return true;
-	else {
-		printf("[EEPROM] (write): fail (%d)!\n", response);
-		return false;
-	}
-}
-
 bool EEPROM::save(SYSTEM::DATA* ctx, SemaphoreHandle_t mutex_i2c) {
 	EEPROM::TABLE data;
 	
 	// Table data here
 	data.magic = ctx->magic;
-	data.val_co2 = ctx->val_co2;
+	data.co2_target = ctx->co2_target;
 	
 	// CRC
 	size_t data_len = sizeof(EEPROM::TABLE) - sizeof(uint16_t);
@@ -95,12 +62,45 @@ bool EEPROM::load(SYSTEM::DATA* ctx, SemaphoreHandle_t mutex_i2c) {
 		return false;
 	}
 
-	// 4. Recovery successful, apply to context
-	ctx->magic = data.magic;
-	ctx->val_co2 = data.val_co2;
+	// Restore needed fields
+	ctx->co2_target = data.co2_target;
 
 	printf("[EEPROM] (load): Restored state from EEPROM\n");
+	printf("INSPECT: magic: 0x%x, co2_t: %d\n", data.magic, data.co2_target);
 	return true;
+}
+
+bool EEPROM::read(uint16_t address, uint8_t *buffer, int count) {
+	uint8_t mem_address[2];
+	mem_address[0] = (address >> 8) & 0xFF;
+	mem_address[1] = address & 0xFF;
+
+	int response = i2c_write_timeout_us(EEPROM::I2C, EEPROM::ADDRESS, mem_address, 2, true, EEPROM::I2C_TIMEOUT_US);
+	if (response == 2) {
+		response = i2c_read_timeout_us(EEPROM::I2C, EEPROM::ADDRESS, buffer, count, false, EEPROM::I2C_TIMEOUT_US);
+		if (response == count) return true;
+	}
+
+	printf("[EEPROM] (read): fail (%d)!\n", response);
+	return false;
+}
+
+bool EEPROM::write(uint16_t address, uint8_t *buffer, int count) {
+	uint8_t data[EEPROM::PAGE_SIZE + 2]; 
+	if (count > EEPROM::PAGE_SIZE) return false;
+
+	data[0] = (address >> 8) & 0xFF;
+	data[1] = address & 0xFF;
+	memcpy(&data[2], buffer, count);
+
+	int response = i2c_write_timeout_us(EEPROM::I2C, EEPROM::ADDRESS, data, 2 + count, false, EEPROM::I2C_TIMEOUT_US);
+	vTaskDelay(pdMS_TO_TICKS(EEPROM::OP_DELAY_MS));
+
+	if (response == 2 + count) return true;
+	else {
+		printf("[EEPROM] (write): fail (%d)!\n", response);
+		return false;
+	}
 }
 
 uint16_t EEPROM::crc16(const uint8_t *pData, size_t len) {

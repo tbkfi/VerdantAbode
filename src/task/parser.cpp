@@ -40,14 +40,17 @@ void PARSER::task(void* param) {
 			//else action_local_input_regular(ctx, &e_local_input);
 			action_local_input_regular(ctx, &e_local_input);
 		}
+
 		if (ctx->sdp610_queue != nullptr && xQueueReceive(ctx->sdp610_queue, &e_sdp610, 0) == pdTRUE) {
 		// SDP610 for Pa
 			action_sdp610(ctx, &e_sdp610);
 		}
+
 		if (ctx->gmp252_queue != nullptr && xQueueReceive(ctx->gmp252_queue, &e_gmp252, 0) == pdTRUE) {
 		// GMP252 for CO2
 			action_gmp252(ctx, &e_gmp252);
 		}
+
 		if (ctx->hmp60_queue != nullptr && xQueueReceive(ctx->hmp60_queue, &e_hmp60, 0) == pdTRUE) {
 		// HMP60 for Temperature
 			action_hmp60(ctx, &e_hmp60);

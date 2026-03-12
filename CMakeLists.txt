@@ -18,7 +18,7 @@ SET(FREERTOS_KERNEL_PATH "${CMAKE_CURRENT_SOURCE_DIR}/module/freertos-kernel")
 include(${PICO_SDK_PATH}/external/pico_sdk_import.cmake)
 include(${FREERTOS_KERNEL_PATH}/portable/ThirdParty/GCC/RP2040/FreeRTOS_Kernel_import.cmake)
 
-project(${PROJECT_NAME})
+project(${PROJECT_NAME} C CXX ASM)
 pico_sdk_init()
 
 # Subdirectories

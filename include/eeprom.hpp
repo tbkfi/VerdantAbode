@@ -24,7 +24,7 @@ namespace EEPROM {
 	// see: https://www.gnu.org/software/c-intro-and-ref/manual/html_node/Packed-Structures.html
 	// SYSTEM::DATA ctx, saved fields go here!
 		uint8_t magic;
-		int16_t val_co2;
+		int16_t co2_target;
 		uint16_t crc;
 	};
 
