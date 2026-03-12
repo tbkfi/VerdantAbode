@@ -14,6 +14,7 @@ add_executable(
 	task/hmp60.cpp
 	task/mio.cpp
 	task/valve.cpp
+   task/wifi.cpp
 
 	# Parser Actions
 	action/action_local_inputs.cpp
@@ -61,6 +62,9 @@ target_link_libraries(
 	hardware_gpio
 	hardware_i2c
 	FreeRTOS-Kernel-Heap4
+   pico_lwip_http
+   pico_cyw3_arch_lwip_poll
+   hardware_adc
 )
 
 pico_add_extra_outputs(${PROJECT_NAME})
