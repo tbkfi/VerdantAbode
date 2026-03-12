@@ -24,6 +24,7 @@ extern "C" {
 #include "hmp60.hpp"
 #include "mio.hpp"
 #include "valve.hpp"
+#include "wifi.hpp"
 
 
 int main() {
@@ -56,9 +57,11 @@ int main() {
 	VALVE::create_task(&system);
 	system.input_queue  = LOCAL_INPUTS::create();
 	system.sdp610_queue = SDP610::create_task(system.mutex_i2c);
-	system.gmp252_queue = GMP252::create_task(system.mutex_uart, system.rtu_client);
-	system.hmp60_queue  = HMP60::create_task(system.mutex_uart, system.rtu_client);
-	system.mio_queue    = FAN::create_task(system.mutex_uart, system.rtu_client);
+	system.gmp252_queue = GMP252::create_task(system.mutex_uart, system.rtu_client, system.uart);
+	system.hmp60_queue  = HMP60::create_task(system.mutex_uart, system.rtu_client, system.uart);
+	system.mio_queue    = FAN::create_task(system.mutex_uart, system.rtu_client, system.uart);
+
+	//xTaskCreate(network_task, "WIFI", 2048, NULL, tskIDLE_PRIORITY + 3, NULL);
 
 	vTaskStartScheduler();
     while(true);

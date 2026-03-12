@@ -15,8 +15,9 @@
 #include "queue.h"
 #include "semphr.h"
 
-#include <modbus_client.hpp>
-#include <modbus_register.hpp>
+#include "uart.hpp"
+#include "modbus_client.hpp"
+#include "modbus_register.hpp"
 
 
 namespace FAN {
@@ -36,6 +37,7 @@ namespace FAN {
 	struct CTX {
 	// Task Context
 		std::shared_ptr<ModbusClient> rtu_client;
+		std::shared_ptr<PicoUart> uart;
 		SemaphoreHandle_t mutex;
 		QueueHandle_t que;
 		int speed_current = 0;
@@ -48,7 +50,8 @@ namespace FAN {
 	};
 
 	void task(void *param);
-	QueueHandle_t create_task(SemaphoreHandle_t mutex_uart, std::shared_ptr<ModbusClient> rtu_client);
+	QueueHandle_t create_task(SemaphoreHandle_t mutex_uart,
+				std::shared_ptr<ModbusClient> rtu_client, std::shared_ptr<PicoUart> uart);
 
 	void set_speed(int speed, QueueHandle_t que);
 	//void set_target(QueueHandle_t que, int &speed_current, int target, int steps);

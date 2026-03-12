@@ -12,8 +12,9 @@
 #include "queue.h"
 #include "semphr.h"
 
-#include <modbus_client.hpp>
-#include <modbus_register.hpp>
+#include "uart.hpp"
+#include "modbus_client.hpp"
+#include "modbus_register.hpp"
 
 
 namespace GMP252 {
@@ -39,6 +40,7 @@ namespace GMP252 {
 	typedef struct {
 	// Task Context
         std::shared_ptr<ModbusClient> rtu_client;
+		std::shared_ptr<PicoUart> uart;
 		SemaphoreHandle_t mutex;
 		QueueHandle_t que;
 	} CTX;
@@ -50,5 +52,6 @@ namespace GMP252 {
 	} QUE_ELEMENT;
 
 	void task(void *param);
-	QueueHandle_t create_task (SemaphoreHandle_t mutex_i2c, std::shared_ptr<ModbusClient> rtu_client);
+	QueueHandle_t create_task (SemaphoreHandle_t mutex_uart,
+				std::shared_ptr<ModbusClient> rtu_client, std::shared_ptr<PicoUart> uart);
 }

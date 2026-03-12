@@ -6,9 +6,11 @@
 #include "mio.hpp"
 
 
-QueueHandle_t FAN::create_task(SemaphoreHandle_t mutex_uart, std::shared_ptr<ModbusClient> rtu_client) {
+QueueHandle_t FAN::create_task(SemaphoreHandle_t mutex_uart,
+		std::shared_ptr<ModbusClient> rtu_client, std::shared_ptr<PicoUart> uart) {
 	static FAN::CTX ctx;
 	ctx.mutex = mutex_uart;
+	ctx.uart = uart;
 	ctx.rtu_client = rtu_client;
 	ctx.que = xQueueCreate(FAN::QUE_LEN, sizeof(FAN::QUE_ELEMENT));
 
@@ -35,6 +37,7 @@ void FAN::task(void *param) {
 				if (FAN::DEBUG) printf("[FAN] (status): updating to %d.\n", e.data);
 
 				if (xSemaphoreTake(ctx->mutex, pdMS_TO_TICKS(100)) == pdTRUE) {
+					ctx->uart->flush();
 					fan.write(e.data);
 					xSemaphoreGive(ctx->mutex);
 				} else {

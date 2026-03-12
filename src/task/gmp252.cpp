@@ -8,11 +8,12 @@
 
 QueueHandle_t
 GMP252::create_task
-(SemaphoreHandle_t mutex_uart, std::shared_ptr<ModbusClient> rtu_client)
+(SemaphoreHandle_t mutex_uart, std::shared_ptr<ModbusClient> rtu_client, std::shared_ptr<PicoUart> uart)
 {
 	static GMP252::CTX ctx;
 	ctx.mutex = mutex_uart;
 	ctx.rtu_client = rtu_client;
+	ctx.uart = uart;
 	ctx.que = xQueueCreate(GMP252::QUE_LEN, sizeof(GMP252::QUE_ELEMENT));
 
 	// Validation
@@ -46,6 +47,7 @@ void GMP252::task(void* param) {
 		}
 
 		// Read Measurement
+		ctx->uart->flush();
 		if (GMP252::DEBUG) printf("[GMP252] Attempting to read...\n");
 
 		reading_raw = (int16_t) gmp252.read();

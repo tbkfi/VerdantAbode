@@ -7,11 +7,11 @@
 
 
 QueueHandle_t HMP60::create_task(SemaphoreHandle_t mutex_uart,
-	std::shared_ptr<ModbusClient> rtu_client) {
-
+	std::shared_ptr<ModbusClient> rtu_client, std::shared_ptr<PicoUart> uart) {
 	static HMP60::CTX ctx;
-	ctx.mutex = mutex_uart;
 	ctx.rtu_client = rtu_client;
+	ctx.mutex = mutex_uart;
+	ctx.uart = uart;
 	ctx.que = xQueueCreate(HMP60::QUE_LEN, sizeof(HMP60::QUE_ELEMENT));
 
 	// Validation
@@ -46,6 +46,7 @@ void HMP60::task(void* param) {
 			if (HMP60::DEBUG) printf("[HMP60] Mutex unavailable.\n");
 			continue;
 		}
+		ctx->uart->flush();
 
 		HMP60::QUE_ELEMENT e;
 		e.time_ms = pdTICKS_TO_MS(xTaskGetTickCount());
