@@ -54,16 +54,11 @@ int main() {
 	system.i2c_dev = std::make_shared<PicoI2CDevice>(system.i2c_bus, OLED::ADDR); 
 	system.display = std::make_shared<ssd1306>(system.i2c_dev);
 
-	// TEST SCREEN
-	//system.display->fill(1);
-	//system.display->show();
-
-
 	if (system.events == NULL || system.mutex_i2c == NULL || system.mutex_uart == NULL) {
 		while (true) printf("[SYSTEM] Initialisation lead to NULL!\n");
 	}
 	
-	// TASKS
+	// TASK creation
 	task_create_blinky();
 	task_create_parser(&system);
 	task_create_controller(&system);
