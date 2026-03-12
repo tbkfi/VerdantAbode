@@ -6,8 +6,8 @@
 #include <hmp60.hpp>
 
 
-QueueHandle_t task_create_hmp60 (SemaphoreHandle_t mutex_uart,
-		std::shared_ptr<ModbusClient> rtu_client) {
+QueueHandle_t HMP60::create_task(SemaphoreHandle_t mutex_uart,
+	std::shared_ptr<ModbusClient> rtu_client) {
 
 	static HMP60::CTX ctx;
 	ctx.mutex = mutex_uart;
@@ -20,11 +20,11 @@ QueueHandle_t task_create_hmp60 (SemaphoreHandle_t mutex_uart,
 	}
 	vQueueAddToRegistry(ctx.que, "HMP60");
 	
-	xTaskCreate(task_hmp60, "HMP60", HMP60::STACK_DEPTH, (void *) &ctx, HMP60::TASK_PRIORITY, NULL);
+	xTaskCreate(HMP60::task, "HMP60", HMP60::STACK_DEPTH, (void *) &ctx, HMP60::TASK_PRIORITY, NULL);
 	return ctx.que;
 }
 
-void task_hmp60(void* param) {
+void HMP60::task(void* param) {
 	HMP60::CTX* ctx = (HMP60::CTX*) param;
 	HMP60::QUE_ELEMENT e;
 

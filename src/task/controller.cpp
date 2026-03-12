@@ -4,55 +4,47 @@
  * Tuomo Björk
 */
 #include "controller.hpp"
+#include "mio.hpp"
 #include "system.hpp"
-
-//#include "fan.hpp"
-//#include "valve.hpp"
+#include "eeprom.hpp"
 
 
-// temp funcs
-void fan(int speed) {}
-void valve(bool open) {}
-
-
-void task_create_controller(SYSTEM::DATA* ctx) {
-	xTaskCreate(task_controller, "CONTROLLER",
+void CONTROLLER::create_task(SYSTEM::DATA* ctx) {
+	xTaskCreate(CONTROLLER::task, "CONTROLLER",
 			 CONTROLLER::STACK_DEPTH, (void*) ctx, CONTROLLER::TASK_PRIORITY, NULL);
 }
 
-void task_controller(void* param) {
+void CONTROLLER::task(void* param) {
 	SYSTEM::DATA* ctx = (SYSTEM::DATA*)param;
+
+	// Restore Controller settings
+	EEPROM::load(ctx, ctx->mutex_i2c);
 	
-	// Timing
 	TickType_t last_wake = xTaskGetTickCount();
 	TickType_t interval = pdMS_TO_TICKS(CONTROLLER::POLL_MS);
-	TickType_t valve_timer = xTaskGetTickCount();
-
-	// const TickType_t CO2_ADD_TIME = pdMS_TO_TICKS(CONTROLLER::CO2_ADD_TIME_MS);
-	// const TickType_t CO2_RMV_TIME = pdMS_TO_TICKS(CONTROLLER::CO2_RMV_TIME_MS);
 
 	while (true) {
 		vTaskDelayUntil(&last_wake, interval);
 
-		if (ctx->val_co2 <= ctx->val_co2 - SYSTEM::CO2_SPAN ||
-			ctx->val_co2 >= ctx->val_co2 + SYSTEM::CO2_SPAN) {
-		// CO2 is within tolerances
+		if (ctx->val_co2 >= SYSTEM::CO2_CRITICAL) {
+		// CO2 Exceeds CRITICAL
+			VALVE::open(false, ctx);
+			if (ctx->mio_queue != nullptr) FAN::set_speed(CONTROLLER::PR_FLUSH_CRIT, ctx->mio_queue);
 		}
-		else if (ctx->val_co2 >= SYSTEM::CO2_CRITICAL) {
-		// CO2 Exceeds CRITICAL target
-			valve(false);
-			//fan(100);
-            fan_speed_target(ctx, 1000, 5);
+		else if (ctx->val_co2 > (ctx->co2_target + SYSTEM::CO2_SPAN)) {
+		// CO2 above target
+			VALVE::open(false, ctx);
+			if (ctx->mio_queue != nullptr) FAN::set_speed(CONTROLLER::PR_FLUSH_CRIT, ctx->mio_queue);
 		}
-		else if (ctx->val_co2 > ctx->co2_target) {
-		// CO2 Exceeds NORMAL target
-			valve(false);
-            fan_speed_target(ctx, 200, 5);
-			// fan(20);
-		}
-		else if (ctx->val_co2 < ctx->co2_target) {
+		else if (ctx->val_co2 < (ctx->co2_target - SYSTEM::CO2_SPAN)) {
 		// CO2 below target
-			valve(true);
+			VALVE::open(true, ctx);
+			if (ctx->mio_queue != nullptr) FAN::set_speed(0, ctx->mio_queue);
+		}
+		else {
+		// Nominal
+			VALVE::open(false, ctx);
+			if (ctx->mio_queue != nullptr) FAN::set_speed(0, ctx->mio_queue);
 		}
 	}
 }

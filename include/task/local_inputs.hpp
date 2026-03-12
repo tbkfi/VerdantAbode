@@ -28,7 +28,7 @@ namespace LOCAL_INPUTS {
 	constexpr uint8_t ROTB_PIN = 11;
 	constexpr uint8_t ROTC_PIN = 12;
 
-	constexpr uint16_t DEBOUNCE_MS = 150;
+	constexpr uint16_t DEBOUNCE_MS = 50;
 
 	// Queue
 	constexpr uint8_t QUE_LEN = 32;
@@ -36,10 +36,11 @@ namespace LOCAL_INPUTS {
 		uint8_t pin;
 		uint32_t time_ms;
 	};
+
+	void isr(uint gpio, uint32_t events);
+	void init_btn(uint8_t pin);
+	void init_rot(uint8_t pin_a, uint8_t pin_b, uint8_t pin_sw);
+
+	QueueHandle_t create(void);
 }
 
-void isr_local_input(uint gpio, uint32_t events);
-void init_btn(uint8_t pin);
-void init_rot(uint8_t pin_a, uint8_t pin_b, uint8_t pin_sw);
-
-QueueHandle_t create_local_inputs(void);

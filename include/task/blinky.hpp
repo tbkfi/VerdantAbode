@@ -11,6 +11,7 @@
 #include "task.h"
 
 namespace BLINKY {
+	constexpr bool DEBUG = false; // print debugs?
 	constexpr uint8_t PIN = 20;
 	constexpr uint16_t DELAY_MS = 1250;
 	constexpr uint8_t TASK_PRIO = 8;
@@ -20,7 +21,7 @@ namespace BLINKY {
 		uint16_t delay_ms;
 	};
 
+	void task(void *param);
+	void create_task(void);
 }
 
-void task_blinky(void *param);
-void task_create_blinky(void);

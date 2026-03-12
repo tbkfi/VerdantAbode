@@ -2,6 +2,7 @@ add_executable(
 	${PROJECT_NAME}
 	main.cpp
 	util.cpp
+	eeprom.cpp
 
 	# FreeRTOS tasks
 	task/blinky.cpp
@@ -14,6 +15,8 @@ add_executable(
 	task/oled.cpp
     task/mio.cpp
 	task/hmp60.cpp
+	task/mio.cpp
+	task/valve.cpp
 
 	# Parser Actions
 	action/action_local_inputs.cpp

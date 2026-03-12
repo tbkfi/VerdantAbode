@@ -6,27 +6,26 @@
 #include "sdp610.hpp"
 
 
-QueueHandle_t task_create_sdp610(SemaphoreHandle_t mutex_i2c) {
+QueueHandle_t SDP610::create_task(SemaphoreHandle_t mutex_i2c) {
 // Helper to automatically create SDP610 task,
 // returns the datapoint queue handle.
-
 	static SDP610::CTX ctx;
 	ctx.mutex = mutex_i2c;
 	ctx.que = xQueueCreate(SDP610::QUE_LEN, sizeof(SDP610::QUE_ELEMENT));
 
 	// Validation, Registration
-	if (ctx.que == NULL) {
+	if (ctx.que == nullptr) {
 		while (true) printf("[SDP610] Queue is NULL!!!\n");
 	}
 	vQueueAddToRegistry(ctx.que, "SDP610");
 
 	// Task
-	xTaskCreate(task_sdp610, "SDP610", SDP610::STACK_DEPTH,
+	xTaskCreate(SDP610::task, "SDP610", SDP610::STACK_DEPTH,
 			 (void *) &ctx, SDP610::TASK_PRIORITY, NULL);
 	return ctx.que;
 }
 
-void task_sdp610(void* param) {
+void SDP610::task(void* param) {
 	SDP610::CTX* ctx = (SDP610::CTX*) param;
 
 	int rc = 0;
@@ -71,7 +70,7 @@ void task_sdp610(void* param) {
 				if (SDP610::DEBUG)
 					printf("[SDP610] Trying to obtain I2C Mutex (2/2)...\n");
 
-				if (xSemaphoreTake(ctx->mutex, pdMS_TO_TICKS(50)) != pdTRUE) {
+				if (xSemaphoreTake(ctx->mutex, pdMS_TO_TICKS(100)) != pdTRUE) {
 				// Mutex unavailable
 					if (SDP610::DEBUG) printf("[SDP610] I2C not free!\n");
 				}

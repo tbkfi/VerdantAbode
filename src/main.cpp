@@ -12,6 +12,7 @@ extern "C" {
 
 #include "system.hpp"
 #include "util.hpp"
+#include "eeprom.hpp"
 
 #include "blinky.hpp"
 #include "parser.hpp"
@@ -23,6 +24,8 @@ extern "C" {
 #include "oled.hpp"
 #include "mio.hpp"
 #include "hmp60.hpp"
+#include "mio.hpp"
+#include "valve.hpp"
 
 
 int main() {
@@ -37,37 +40,26 @@ int main() {
 
 	// SYSTEM initialisation
 	static SYSTEM::DATA system;
-	system.co2_target = SYSTEM::CO2_TARGET;
-	system.events = xEventGroupCreate();
-	system.mutex_i2c = xSemaphoreCreateMutex();
-	system.mutex_uart = xSemaphoreCreateMutex();
-	system.input_queue = nullptr;
-	system.sdp610_queue = nullptr;
-	system.gmp252_queue = nullptr;
-    system.mio_queue = nullptr;
-	system.hmp60_queue = nullptr;
 
 	system.uart = std::make_shared<PicoUart>(SYSTEM::UART_NR, SYSTEM::UART_TX_PIN, SYSTEM::UART_RX_PIN, SYSTEM::BAUD_RATE, SYSTEM::STOP_BITS);
 	system.rtu_client = std::make_shared<ModbusClient>(system.uart);
 
 	system.i2c_bus = std::make_shared<PicoI2CBus>(OLED::BUS_NR, 15, 14);
 	system.i2c_dev = std::make_shared<PicoI2CDevice>(system.i2c_bus, OLED::ADDR); 
-	system.display = std::make_shared<ssd1306>(system.i2c_dev);
 
-	if (system.events == NULL || system.mutex_i2c == NULL || system.mutex_uart == NULL) {
-		while (true) printf("[SYSTEM] Initialisation lead to NULL!\n");
-	}
+	system.display = std::make_shared<ssd1306>(system.i2c_dev);
 	
 	// TASK creation
-	task_create_blinky();
-	task_create_parser(&system);
-	task_create_controller(&system);
-	task_create_ssd1306(&system);
-	system.input_queue = create_local_inputs();
-	system.sdp610_queue = task_create_sdp610(system.mutex_i2c);
-	system.gmp252_queue = task_create_gmp252(system.mutex_uart, system.rtu_client);
-    system.mio_queue = task_create_mio(system.mutex_uart, system.rtu_client);
-	system.hmp60_queue = task_create_hmp60(system.mutex_uart, system.rtu_client);
+	BLINKY::create_task();
+	PARSER::create_task(&system);
+	CONTROLLER::create_task(&system);
+	OLED::create_task(&system);
+	VALVE::create_task(&system);
+	system.input_queue = LOCAL_INPUTS::create();
+	system.sdp610_queue = SDP610::create_task(system.mutex_i2c);
+	system.gmp252_queue = GMP252::create_task(system.mutex_uart, system.rtu_client);
+	system.hmp60_queue = HMP60::create_task(system.mutex_uart, system.rtu_client);
+	system.mio_queue = FAN::create_task(system.mutex_uart, system.rtu_client);
 
 	vTaskStartScheduler();
     while(true);

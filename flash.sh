@@ -40,8 +40,10 @@ check_requirements() {
 }
 
 flash() {
-	local TARGET_DEV="rp2040"
-	pyocd flash -t $TARGET_DEV $1
+openocd -f interface/cmsis-dap.cfg \
+		-f target/rp2040.cfg \
+		-c "adapter speed 5000" \
+		-c "program $1 verify reset exit"
 }
 
 if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then

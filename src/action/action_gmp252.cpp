@@ -8,9 +8,9 @@
 
 void action_gmp252(SYSTEM::DATA* ctx, GMP252::QUE_ELEMENT* e) {
 // Action(s) taken when a CO2 READING is received.
-	printf("[%lu] PARSER(gmp252): %d\n", e->time_ms, e->data);
+	printf("[%lu] PARSER(gmp252): %d ppm\n", e->time_ms, e->data);
 
-	ctx->val_co2 = e->data;
+	if (e->data != 0) ctx->val_co2 = e->data;
 
 	// CO2 exceeds threshold!
 	if (e->data > ctx->co2_target) {
