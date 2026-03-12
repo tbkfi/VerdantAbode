@@ -28,16 +28,18 @@ void task_mio(void *param) {
 
 	FAN::QUE_ELEMENT e;
 	while (true) {
-	// The fan speed is updated via e->data,
-	// whenever an element is received.
 		if (xQueueReceive(ctx->que, &e, portMAX_DELAY) == pdTRUE) {
-			if (FAN::DEBUG) printf("[FAN] (status): updating to %d.\n", e.data);
+			if (e.data != ctx->speed_current) {
+			// Don't hog UART for no reason!
+				ctx->speed_current = e.data; // this not going to sys ctx is problemski
+				if (FAN::DEBUG) printf("[FAN] (status): updating to %d.\n", e.data);
 
-			if (xSemaphoreTake(ctx->mutex, pdMS_TO_TICKS(100)) == pdTRUE) {
-				fan.write(e.data);
-				xSemaphoreGive(ctx->mutex);
-			} else {
-				if (FAN::DEBUG) printf("[FAN] (mutex): unable to obtain.\n");
+				if (xSemaphoreTake(ctx->mutex, pdMS_TO_TICKS(100)) == pdTRUE) {
+					fan.write(e.data);
+					xSemaphoreGive(ctx->mutex);
+				} else {
+					if (FAN::DEBUG) printf("[FAN] (mutex): unable to obtain.\n");
+				}
 			}
 		}
 	}

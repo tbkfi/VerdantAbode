@@ -21,7 +21,7 @@
 
 
 namespace VALVE {
-	constexpr bool DEBUG = false; // Print debugs?
+	constexpr bool DEBUG = true; // Print debugs?
 
 	constexpr uint8_t PIN = 27;
 	constexpr uint16_t POLL_INTERVAL_MS = 50;
@@ -33,3 +33,5 @@ namespace VALVE {
 
 void task_valve(void* param);
 void task_create_valve(SYSTEM::DATA* ctx);
+
+void valve_open(bool open, SYSTEM::DATA* ctx);

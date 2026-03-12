@@ -28,7 +28,7 @@
 namespace SYSTEM {
 	// Variables
 	constexpr uint16_t CO2_TARGET = 800;    // Target CO2 level (ppm)
-	constexpr uint16_t CO2_SPAN = 25;       // +- tolerance around CO2_TARGET
+	constexpr uint16_t CO2_SPAN = 15;       // +- tolerance around CO2_TARGET
 
 	constexpr uint16_t CO2_FLOOR = 200;     // Lowest allowed CO2 target
 	constexpr uint16_t CO2_CEIL = 1500;     // Highest allowed CO2 target
@@ -86,20 +86,16 @@ namespace SYSTEM {
 		QueueHandle_t mio_queue    = nullptr;  // MIO::PARAM->que
 
 		// Devices
-		std::shared_ptr<PicoUart> uart           = nullptr;
+		std::shared_ptr<PicoUart>     uart       = nullptr;
 		std::shared_ptr<ModbusClient> rtu_client = nullptr;
 		
-		std::shared_ptr<PicoI2CBus> i2c_bus    = nullptr;
+		std::shared_ptr<PicoI2CBus>    i2c_bus = nullptr;
 		std::shared_ptr<PicoI2CDevice> i2c_dev = nullptr;
-		std::shared_ptr<ssd1306> display       = nullptr;
+		std::shared_ptr<ssd1306>       display = nullptr;
 	};
 }
 
 namespace Pin {
-	// UART (Simulator)
-	constexpr uint8_t UART_TX_SLAVE = 5;
-	constexpr uint8_t UART_RX_SLAVE = 4;
-
 	// I2C (Sensirion)
 	inline i2c_inst_t* const I2C0_UNIT = i2c0;
 	constexpr uint32_t I2C0_BAUD = 100 * 1000;

@@ -51,12 +51,12 @@ int main() {
 	task_create_parser(&system);
 	task_create_controller(&system);
 	task_create_ssd1306(&system);
-	//task_create_valve(&system);
+	task_create_valve(&system);
 	system.input_queue = create_local_inputs();
 	system.sdp610_queue = task_create_sdp610(system.mutex_i2c);
 	system.gmp252_queue = task_create_gmp252(system.mutex_uart, system.rtu_client);
 	system.hmp60_queue = task_create_hmp60(system.mutex_uart, system.rtu_client);
-	system.mio_queue = task_create_mio(system.mutex_uart, system.rtu_client);
+	//system.mio_queue = task_create_mio(system.mutex_uart, system.rtu_client);
 
 	vTaskStartScheduler();
     while(true);
