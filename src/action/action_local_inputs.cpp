@@ -20,13 +20,13 @@ void action_local_input_regular(SYSTEM::DATA* ctx, LOCAL_INPUTS::QUE_ELEMENT* e)
 		// Increment CO2 target
 			ctx->co2_target += SYSTEM::CO2_INCR;
 			if (ctx->co2_target > SYSTEM::CO2_CEIL) ctx->co2_target = SYSTEM::CO2_CEIL;
-			printf("[%lu] PARSER(co2_target++): %lu\n", e->time_ms, ctx->co2_target);
+			printf("[%lu] PARSER(co2_target++): %d\n", e->time_ms, ctx->co2_target);
 			break;
 		case LOCAL_INPUTS::ROTB_PIN:
 		// Decrement CO2 target
 			ctx->co2_target -= SYSTEM::CO2_INCR;
 			if (ctx->co2_target < SYSTEM::CO2_FLOOR) ctx->co2_target = SYSTEM::CO2_FLOOR;
-			printf("[%lu] PARSER(co2_target--): %lu\n", e->time_ms, ctx->co2_target);
+			printf("[%lu] PARSER(co2_target--): %d\n", e->time_ms, ctx->co2_target);
 			break;
 		case LOCAL_INPUTS::BTN1_PIN:
 		// Unassigned

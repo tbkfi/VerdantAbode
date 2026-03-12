@@ -12,6 +12,7 @@
 #include "hardware/i2c.h"
 
 #include "FreeRTOS.h"
+#include "projdefs.h"
 #include "task.h"
 #include "semphr.h"
 
@@ -27,11 +28,11 @@ namespace EEPROM {
 		uint16_t crc;
 	};
 
-	inline i2c_inst_t* const I2C = i2c1;
+	inline i2c_inst_t* const I2C = i2c0;
 	constexpr uint32_t I2C_TIMEOUT_US = 10 * 1000;
 	constexpr uint32_t BAUDRATE_HZ = (100 * 1000);
-	constexpr uint8_t SDA_PIN = 14;
-	constexpr uint8_t SCL_PIN = 15;
+	constexpr uint8_t SDA_PIN = 16;
+	constexpr uint8_t SCL_PIN = 17;
 
 	constexpr uint32_t DATA_ADDR = 0;          // Saved data addr.
 

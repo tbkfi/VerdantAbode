@@ -4,6 +4,7 @@
  * Tuomo Björk
 */
 #include "eeprom.hpp"
+#include "portmacro.h"
 #include "projdefs.h"
 
 
@@ -52,9 +53,11 @@ bool EEPROM::save(SYSTEM::DATA* ctx, SemaphoreHandle_t mutex_i2c) {
 	data.crc = crc16((uint8_t*) &data, data_len);
 
 	// Write
-	xSemaphoreTake(mutex_i2c, pdMS_TO_TICKS(50));
-	bool status = EEPROM::write(EEPROM::DATA_ADDR, (uint8_t*)&data, sizeof(EEPROM::TABLE));
-	xSemaphoreGive(mutex_i2c);
+	bool status = false;
+	if (xSemaphoreTake(mutex_i2c, portMAX_DELAY) == pdTRUE) {
+		status = EEPROM::write(EEPROM::DATA_ADDR, (uint8_t*)&data, sizeof(EEPROM::TABLE));
+		xSemaphoreGive(mutex_i2c);
+	}
 
 	if (!status) printf("[EEPROM] (save): failed to save data!\n");
 	else printf("[EEPROM] (save): data saved succesfully!\n");
@@ -66,10 +69,14 @@ bool EEPROM::load(SYSTEM::DATA* ctx, SemaphoreHandle_t mutex_i2c) {
 	EEPROM::TABLE data;
 
 	// Get the data
-	xSemaphoreTake(mutex_i2c, pdMS_TO_TICKS(50));
-	bool status = EEPROM::read(EEPROM::DATA_ADDR, (uint8_t*) &data, sizeof(EEPROM::TABLE));
-	xSemaphoreGive(mutex_i2c);
+	bool status = false;
+	if (xSemaphoreTake(mutex_i2c, portMAX_DELAY) == pdTRUE) {
+		status = EEPROM::read(EEPROM::DATA_ADDR, (uint8_t*) &data, sizeof(EEPROM::TABLE));
+		xSemaphoreGive(mutex_i2c);
+	}
+
 	if (!status) {
+		// Failure
 		printf("[EEPROM] (load): Reading failed!\n");
 		return false;
 	}

@@ -38,7 +38,6 @@ int main() {
 
 	// SYSTEM initialisation
 	static SYSTEM::DATA system;
-	EEPROM::load(&system, system.mutex_i2c);
 
 	system.uart = std::make_shared<PicoUart>(SYSTEM::UART_NR, SYSTEM::UART_TX_PIN, SYSTEM::UART_RX_PIN, SYSTEM::BAUD_RATE, SYSTEM::STOP_BITS);
 	system.rtu_client = std::make_shared<ModbusClient>(system.uart);
