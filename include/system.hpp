@@ -11,6 +11,7 @@
 #include "hardware/i2c.h"
 
 #include "FreeRTOS.h"
+#include "portmacro.h"
 #include "task.h"
 #include "queue.h"
 #include "semphr.h"
@@ -37,60 +38,64 @@ namespace SYSTEM {
 	constexpr uint8_t SSID_BUFF_LEN = 128;
 
 	// Event flags
-	constexpr uint32_t FLAG_CO2_HIGH       = ( 1 << 0 ); // Indicates high CO2
-	constexpr uint32_t FLAG_CO2_LOW        = ( 1 << 1 ); // Indicates low CO2
-	constexpr uint32_t FLAG_WIFI_SETUP     = ( 1 << 2 ); // WIFI setup screen?
-	constexpr uint32_t FLAG_WIFI_PFIELD    = ( 1 << 3 ); // Pass-field selected?
-	constexpr uint32_t FLAG_WIFI_CONNECTED = ( 1 << 4 ); // Wifi connetion status
-	constexpr uint32_t FLAG_VALVE_OPEN     = ( 1 << 5 ); // CO2 valve is open
+	constexpr EventBits_t FLAG_CO2_HIGH       = ( 1 << 0 );  // Indicates high CO2
+	constexpr EventBits_t FLAG_CO2_LOW        = ( 1 << 1 );  // Indicates low CO2
+	constexpr EventBits_t FLAG_WIFI_SETUP     = ( 1 << 2 );  // WIFI setup screen?
+	constexpr EventBits_t FLAG_WIFI_PFIELD    = ( 1 << 3 );  // Pass-field selected?
+	constexpr EventBits_t FLAG_WIFI_CONNECTED = ( 1 << 4 );  // Wifi connetion status
+	constexpr EventBits_t FLAG_VALVE_OPEN     = ( 1 << 5 );  // CO2 valve is open
 
-	struct DATA {
-	// System State
-		uint32_t co2_target;            // Target CO2 level
-		char* wifi_ssid[SSID_BUFF_LEN]; // Wifi SSID
-		char* wifi_pass[SSID_BUFF_LEN]; // Wifi Password
-		uint8_t wifi_ssid_pos = 0;
-		uint8_t wifi_pass_pos = 0;
-		EventGroupHandle_t events;      // Event flags
-		SemaphoreHandle_t mutex_i2c;    // I2C Lock
-		SemaphoreHandle_t mutex_uart;   // UART Lock
-		QueueHandle_t input_queue;      // Local inputs
-		QueueHandle_t sdp610_queue;     // SDP610::PARAM->que
-		QueueHandle_t gmp252_queue;     // GMP252::PARAM->que
-		QueueHandle_t hmp60_queue;      // HMP60::PARAM->que
-		QueueHandle_t mio_queue;        // MIO::PARAM->que
-
-		// Latest sensor values
-		int16_t  val_co2;
-		float val_temp;
-		float val_pa;
-		int16_t val_fan;
-
-		// Devices
-		std::shared_ptr<PicoUart> uart;
-		std::shared_ptr<ModbusClient> rtu_client;
-		
-		std::shared_ptr<PicoI2CBus> i2c_bus;
-		std::shared_ptr<PicoI2CDevice> i2c_dev;
-		std::shared_ptr<ssd1306> display;
-
-		// Input Related
-		char setup_c;   // Current Character (setup input fields)
-		int ctr_input;  // Auxiliary ctr for smoothing inputs
-	};
-
-	// Modbus
+	// Uart & Modbus
 	constexpr uint8_t UART_NR = 1;
 	constexpr uint8_t UART_TX_PIN = 4;
 	constexpr uint8_t UART_RX_PIN = 5;
 	constexpr uint16_t BAUD_RATE = 9600;
 	constexpr uint8_t STOP_BITS = 2;
+
+	struct DATA {
+	// System State
+		EventGroupHandle_t events = xEventGroupCreate();
+
+		uint32_t co2_target = SYSTEM::CO2_TARGET;  // Target CO2 level
+		char* wifi_ssid[SSID_BUFF_LEN] = {0};      // Wifi SSID
+		char* wifi_pass[SSID_BUFF_LEN] = {0};      // Wifi Password
+		uint8_t wifi_ssid_pos = 0;
+		uint8_t wifi_pass_pos = 0;
+
+		// Sensor & Actuator
+		int16_t val_co2  = 0;
+		float   val_temp = 0;
+		float   val_pa   = 0;
+		int     val_fan  = 0;
+
+		TickType_t time_valve_opened_ms = 0; // When valve was prev. opened
+		TickType_t time_valve_closed_ms = 0; // When valve was prev. closed
+
+		// Input Related
+		TickType_t prev_input_time_ms = 0;  // When last input was
+		char setup_c  = 0;                  // Current Character (setup input fields)
+		int ctr_input = 0;                  // Auxiliary ctr for smoothing inputs
+
+		SemaphoreHandle_t mutex_i2c  = xSemaphoreCreateMutex();
+		SemaphoreHandle_t mutex_uart = xSemaphoreCreateMutex();
+
+		QueueHandle_t input_queue  = nullptr;  // Local inputs
+		QueueHandle_t sdp610_queue = nullptr;  // SDP610::PARAM->que
+		QueueHandle_t gmp252_queue = nullptr;  // GMP252::PARAM->que
+		QueueHandle_t hmp60_queue  = nullptr;  // HMP60::PARAM->que
+		QueueHandle_t mio_queue    = nullptr;  // MIO::PARAM->que
+
+		// Devices
+		std::shared_ptr<PicoUart> uart           = nullptr;
+		std::shared_ptr<ModbusClient> rtu_client = nullptr;
+		
+		std::shared_ptr<PicoI2CBus> i2c_bus    = nullptr;
+		std::shared_ptr<PicoI2CDevice> i2c_dev = nullptr;
+		std::shared_ptr<ssd1306> display       = nullptr;
+	};
 }
 
 namespace Pin {
-	// Local Vent
-	constexpr uint8_t EXHAUST_VALVE = 32;
-
 	// UART (Simulator)
 	constexpr uint8_t UART_TX_SLAVE = 5;
 	constexpr uint8_t UART_RX_SLAVE = 4;

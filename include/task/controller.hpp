@@ -11,13 +11,11 @@
 #include "task.h"
 
 #include "system.hpp"
+#include "mio.hpp"
 
 
 namespace CONTROLLER {
-	constexpr uint16_t POLL_MS = 500;
-	constexpr uint16_t CO2_ADD_TIME_MS = 2;
-	constexpr uint16_t CO2_RMV_TIME_MS = 15;
-	constexpr uint16_t CO2_CRITICAL_THRESH = 2000;
+	constexpr uint16_t POLL_MS = 50;
 
 	// Task settings
 	constexpr uint16_t STACK_DEPTH = 1024;

@@ -28,9 +28,9 @@ void task_blinky(void *param) {
     while (true) {
 		vTaskDelayUntil(&last_ran, interval1);
         gpio_put(ctx->pin, !gpio_get(ctx->pin));
-		printf("[%lu] blink (1/2)\n", pdTICKS_TO_MS(xTaskGetTickCount()));
+		if (BLINKY::DEBUG) printf("[%lu] blink (1/2)\n", pdTICKS_TO_MS(xTaskGetTickCount()));
 		vTaskDelayUntil(&last_ran, interval2);
         gpio_put(ctx->pin, !gpio_get(ctx->pin));
-		printf("[%lu] blink (2/2)\n", pdTICKS_TO_MS(xTaskGetTickCount()));
+		if (BLINKY::DEBUG) printf("[%lu] blink (2/2)\n", pdTICKS_TO_MS(xTaskGetTickCount()));
     }
 }

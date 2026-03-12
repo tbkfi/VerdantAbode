@@ -6,6 +6,8 @@
 #include "action_local_inputs.hpp"
 #include "system.hpp"
 
+#include "mio.hpp"
+
 
 void action_local_input_regular(SYSTEM::DATA* ctx, LOCAL_INPUTS::QUE_ELEMENT* e) {
 // Action(s) taken when a LOCAL INPUT is received.
@@ -26,9 +28,11 @@ void action_local_input_regular(SYSTEM::DATA* ctx, LOCAL_INPUTS::QUE_ELEMENT* e)
 			break;
 		case LOCAL_INPUTS::BTN1_PIN:
 		// Unassigned
+			fan_set_speed(100, ctx->mio_queue);
 			break;
 		case LOCAL_INPUTS::BTN2_PIN:
 		// Unassigned
+			fan_set_speed(0, ctx->mio_queue);
 			break;
 		case LOCAL_INPUTS::BTN3_PIN:
 		{ // Toggle MAIN | SETUP state

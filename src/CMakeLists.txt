@@ -12,6 +12,8 @@ add_executable(
 	task/sdp610.cpp
 	task/gmp252.cpp
 	task/hmp60.cpp
+	task/mio.cpp
+	task/valve.cpp
 
 	# Parser Actions
 	action/action_local_inputs.cpp

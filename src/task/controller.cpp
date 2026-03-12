@@ -6,12 +6,8 @@
 #include "controller.hpp"
 #include "system.hpp"
 
-//#include "fan.hpp"
-//#include "valve.hpp"
-
 
 // temp funcs
-void fan(int speed) {}
 void valve(bool open) {}
 
 
@@ -41,12 +37,12 @@ void task_controller(void* param) {
 		else if (ctx->val_co2 >= SYSTEM::CO2_CRITICAL) {
 		// CO2 Exceeds CRITICAL target
 			valve(false);
-			fan(100);
+			fan_set_speed(100, ctx->mio_queue);
 		}
 		else if (ctx->val_co2 > ctx->co2_target) {
 		// CO2 Exceeds NORMAL target
 			valve(false);
-			fan(20);
+			fan_set_speed(25, ctx->mio_queue);
 		}
 		else if (ctx->val_co2 < ctx->co2_target) {
 		// CO2 below target

@@ -4,36 +4,47 @@
  * Tuomo Björk
 */
 #include "local_inputs.hpp"
+#include "portmacro.h"
+#include "projdefs.h"
+#include <hardware/gpio.h>
 
 
 // These are used within ISR!
 static QueueHandle_t que = xQueueCreate(LOCAL_INPUTS::QUE_LEN, sizeof(LOCAL_INPUTS::QUE_ELEMENT));
-static uint32_t last_input_us = time_us_32();
+static TickType_t last_input = 0;
 
 
 void isr_local_input(uint gpio, uint32_t events) {
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
-    uint32_t now_us = time_us_32();
-    if ((now_us - last_input_us >= (LOCAL_INPUTS::DEBOUNCE_MS * 1000)) && (events & GPIO_IRQ_EDGE_FALL) ) {
-        last_input_us = now_us;
+    TickType_t now = xTaskGetTickCountFromISR();
+	if (events & GPIO_IRQ_EDGE_RISE) {
+	// Avoid phantom triggers on release
+        last_input = now;
+	}
+	else if (events & GPIO_IRQ_EDGE_FALL) {
+	// Inputs only on falling edge
+		if (now - last_input >= pdMS_TO_TICKS(LOCAL_INPUTS::DEBOUNCE_MS)) {
+		// Enforce debounce
+			last_input = now;
 
-        LOCAL_INPUTS::QUE_ELEMENT e;
-        e.time_ms = now_us / 1000;
-        if (gpio == LOCAL_INPUTS::ROTA_PIN) {
-            if (gpio_get(LOCAL_INPUTS::ROTB_PIN)) {
-				// Clockwise
-                e.pin = LOCAL_INPUTS::ROTA_PIN;
-            } else {
-				// Counter-Clockwise
-                e.pin = LOCAL_INPUTS::ROTB_PIN;
-            }
-        } 
-        else {
-            e.pin = gpio;
-        }
-        xQueueSendFromISR(que, &e, &xHigherPriorityTaskWoken);
-    }
+			LOCAL_INPUTS::QUE_ELEMENT e;
+			e.time_ms = pdTICKS_TO_MS(now);
+			if (gpio == LOCAL_INPUTS::ROTA_PIN) {
+				if (gpio_get(LOCAL_INPUTS::ROTB_PIN)) {
+					// Clockwise
+					e.pin = LOCAL_INPUTS::ROTA_PIN;
+				} else {
+					// Counter-Clockwise
+					e.pin = LOCAL_INPUTS::ROTB_PIN;
+				}
+			} 
+			else {
+				e.pin = gpio;
+			}
+			xQueueSendFromISR(que, &e, &xHigherPriorityTaskWoken);
+		}
+	}
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
@@ -56,7 +67,7 @@ QueueHandle_t create_local_inputs(void) {
 
 void init_btn(uint8_t pin) {
 	gpio_init(pin); gpio_set_dir(pin, GPIO_IN); gpio_pull_up(pin);
-	gpio_set_irq_enabled_with_callback(pin, GPIO_IRQ_EDGE_FALL, true, &isr_local_input);
+	gpio_set_irq_enabled_with_callback(pin, GPIO_IRQ_EDGE_FALL | GPIO_IRQ_EDGE_RISE, true, &isr_local_input);
 }
 
 void init_rot(uint8_t pin_a, uint8_t pin_b, uint8_t pin_sw = 0) {
