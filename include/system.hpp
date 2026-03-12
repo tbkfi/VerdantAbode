@@ -47,11 +47,11 @@ namespace SYSTEM {
 	constexpr EventBits_t FLAG_VALVE_OPEN     = ( 1 << 5 );  // CO2 valve is open
 
 	// Uart & Modbus
-	constexpr uint8_t  UART_NR     = 1;
-	constexpr uint8_t  UART_TX_PIN = 4;
-	constexpr uint8_t  UART_RX_PIN = 5;
-	constexpr uint16_t BAUD_RATE   = 9600;
-	constexpr uint8_t  STOP_BITS   = 2;
+	constexpr uint8_t  UART_NR        = 1;
+	constexpr uint8_t  UART_TX_PIN    = 4;
+	constexpr uint8_t  UART_RX_PIN    = 5;
+	constexpr uint16_t UART_BAUD_RATE = 9600;
+	constexpr uint8_t  STOP_BITS      = 2;
 
 	struct DATA {
 	// System State

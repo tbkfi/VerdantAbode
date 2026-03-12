@@ -74,7 +74,7 @@ void OLED::frag_ui(void) {
 
 void OLED::frag_co2(SYSTEM::DATA* ctx) {
 	char buffer[16];
-	snprintf(buffer, sizeof(buffer), "%d / %ld", ctx->val_co2, ctx->co2_target);
+	snprintf(buffer, sizeof(buffer), "%d / %d", ctx->val_co2, ctx->co2_target);
 	
 	ctx->display->text("CO2 :", 0, 0, 1);
 	ctx->display->text(buffer, 40, 0, 1);

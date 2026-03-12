@@ -12,6 +12,7 @@
 #include "hardware/i2c.h"
 
 #include "FreeRTOS.h"
+#include "portmacro.h"
 #include "projdefs.h"
 #include "task.h"
 #include "semphr.h"
@@ -47,8 +48,8 @@ namespace EEPROM {
 	bool read(uint16_t address, uint8_t *buffer, int count);
 	bool write(uint16_t address, uint8_t *buffer, int count);
 
-	bool save(SYSTEM::DATA* ctx, SemaphoreHandle_t mutex_i2c);
-	bool load(SYSTEM::DATA* ctx, SemaphoreHandle_t mutex_i2c);
+	bool save(SYSTEM::DATA* ctx);
+	bool load(SYSTEM::DATA* ctx);
 
 	uint16_t crc16(const uint8_t *pData, size_t len);
 }

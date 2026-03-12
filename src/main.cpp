@@ -39,7 +39,8 @@ int main() {
 	// SYSTEM initialisation
 	static SYSTEM::DATA system;
 
-	system.uart = std::make_shared<PicoUart>(SYSTEM::UART_NR, SYSTEM::UART_TX_PIN, SYSTEM::UART_RX_PIN, SYSTEM::BAUD_RATE, SYSTEM::STOP_BITS);
+	system.uart = std::make_shared<PicoUart>(SYSTEM::UART_NR,
+		SYSTEM::UART_TX_PIN, SYSTEM::UART_RX_PIN, SYSTEM::UART_BAUD_RATE, SYSTEM::STOP_BITS);
 	system.rtu_client = std::make_shared<ModbusClient>(system.uart);
 
 	system.i2c_bus = std::make_shared<PicoI2CBus>(OLED::BUS_NR, 15, 14);
@@ -53,11 +54,11 @@ int main() {
 	CONTROLLER::create_task(&system);
 	OLED::create_task(&system);
 	VALVE::create_task(&system);
-	system.input_queue = LOCAL_INPUTS::create();
+	system.input_queue  = LOCAL_INPUTS::create();
 	system.sdp610_queue = SDP610::create_task(system.mutex_i2c);
 	system.gmp252_queue = GMP252::create_task(system.mutex_uart, system.rtu_client);
-	system.hmp60_queue = HMP60::create_task(system.mutex_uart, system.rtu_client);
-	system.mio_queue = FAN::create_task(system.mutex_uart, system.rtu_client);
+	system.hmp60_queue  = HMP60::create_task(system.mutex_uart, system.rtu_client);
+	system.mio_queue    = FAN::create_task(system.mutex_uart, system.rtu_client);
 
 	vTaskStartScheduler();
     while(true);

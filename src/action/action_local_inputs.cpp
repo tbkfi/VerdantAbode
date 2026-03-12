@@ -29,8 +29,8 @@ void action_local_input_regular(SYSTEM::DATA* ctx, LOCAL_INPUTS::QUE_ELEMENT* e)
 			printf("[%lu] PARSER(co2_target--): %d\n", e->time_ms, ctx->co2_target);
 			break;
 		case LOCAL_INPUTS::BTN1_PIN:
-		// Unassigned
-			EEPROM::save(ctx, ctx->mutex_i2c);
+		// Save Settings
+			EEPROM::save(ctx);
 			break;
 		case LOCAL_INPUTS::BTN2_PIN:
 		// Unassigned

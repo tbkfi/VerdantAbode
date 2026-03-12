@@ -18,7 +18,7 @@ void CONTROLLER::task(void* param) {
 	SYSTEM::DATA* ctx = (SYSTEM::DATA*)param;
 
 	// Restore Controller settings
-	EEPROM::load(ctx, ctx->mutex_i2c);
+	EEPROM::load(ctx);
 	
 	TickType_t last_wake = xTaskGetTickCount();
 	TickType_t interval = pdMS_TO_TICKS(CONTROLLER::POLL_MS);
