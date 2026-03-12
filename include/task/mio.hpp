@@ -29,9 +29,9 @@ namespace FAN {
 
 	constexpr bool DEBUG = true; // Print debugs?
 
-	constexpr UBaseType_t TASK_PRIORITY = tskIDLE_PRIORITY + 2;
-	constexpr uint16_t STACK_DEPTH = 2048;
-	constexpr uint8_t QUE_LEN = 16;
+	constexpr UBaseType_t TASK_PRIORITY = tskIDLE_PRIORITY + 5;
+	constexpr uint16_t STACK_DEPTH = 1024;
+	constexpr uint8_t QUE_LEN = 8;
 
 	struct CTX {
 	// Task Context
@@ -46,11 +46,11 @@ namespace FAN {
 		uint32_t time_ms;
 		int data;
 	};
+
+	void task(void *param);
+	QueueHandle_t create_task(SemaphoreHandle_t mutex_uart, std::shared_ptr<ModbusClient> rtu_client);
+
+	void set_speed(int speed, QueueHandle_t que);
+	//void set_target(QueueHandle_t que, int &speed_current, int target, int steps);
 }
 
-void task_mio(void *param);
-QueueHandle_t task_create_mio
-(SemaphoreHandle_t mutex_uart, std::shared_ptr<ModbusClient> rtu_client);
-
-void fan_set_speed(int speed, QueueHandle_t que);
-//void fan_speed_target(QueueHandle_t que, int &speed_current, int target, int steps);

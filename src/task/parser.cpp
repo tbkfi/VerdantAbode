@@ -13,11 +13,11 @@
 #include "action_hmp60.hpp"
 
 
-void task_create_parser(SYSTEM::DATA* ctx) {
-	xTaskCreate(task_parser, "DEBUG", PARSER::STACK_DEPTH, (void*)ctx, PARSER::TASK_PRIORITY, NULL);
+void PARSER::create_task(SYSTEM::DATA* ctx) {
+	xTaskCreate(PARSER::task, "DEBUG", PARSER::STACK_DEPTH, (void*)ctx, PARSER::TASK_PRIORITY, NULL);
 }
 
-void task_parser(void* param) {
+void PARSER::task(void* param) {
 	SYSTEM::DATA* ctx = (SYSTEM::DATA*) param;
 
 	// Elements

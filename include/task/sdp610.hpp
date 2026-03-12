@@ -23,7 +23,7 @@ namespace SDP610 {
 	inline i2c_inst_t* const I2C_UNIT = i2c1;
 	constexpr unsigned ADDR = 0x40;
 	constexpr uint8_t CMD_MEASURE = 0xF1;
-	constexpr uint16_t POLL_INTERVAL_MS = 1500;
+	constexpr uint16_t POLL_INTERVAL_MS = 2000;
 
 	constexpr UBaseType_t TASK_PRIORITY = tskIDLE_PRIORITY + 3;
 	constexpr uint16_t STACK_DEPTH = 2048;
@@ -44,7 +44,7 @@ namespace SDP610 {
 		uint32_t time_ms;
 		float data;
 	};
-}
 
-void task_sdp610(void *param);
-QueueHandle_t task_create_sdp610(SemaphoreHandle_t mutex_i2c);
+	void task(void *param);
+	QueueHandle_t create_task(SemaphoreHandle_t mutex_i2c);
+}

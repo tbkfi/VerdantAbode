@@ -28,7 +28,7 @@ namespace HMP60 {
 	};
 
 	constexpr uint16_t ADDRESS = 241;
-	constexpr uint16_t POLL_INTERVAL_MS = 500;
+	constexpr uint16_t POLL_INTERVAL_MS = 1000;
 	//constexpr uint16_t INTEGRATION_TIME_MS = 12 * 1000;
 
 	constexpr UBaseType_t TASK_PRIORITY = tskIDLE_PRIORITY + 3;
@@ -47,7 +47,8 @@ namespace HMP60 {
 		uint32_t time_ms;
 		float data;
 	};
+
+	void task(void *param);
+	QueueHandle_t create_task(SemaphoreHandle_t mutex_uart, std::shared_ptr<ModbusClient> rtu_client);
 }
 
-void task_hmp60(void *param);
-QueueHandle_t task_create_hmp60 (SemaphoreHandle_t mutex_uart, std::shared_ptr<ModbusClient> rtu_client);

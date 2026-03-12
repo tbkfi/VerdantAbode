@@ -2,6 +2,7 @@ add_executable(
 	${PROJECT_NAME}
 	main.cpp
 	util.cpp
+	eeprom.cpp
 
 	# FreeRTOS tasks
 	task/blinky.cpp

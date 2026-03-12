@@ -12,6 +12,7 @@ extern "C" {
 
 #include "system.hpp"
 #include "util.hpp"
+#include "eeprom.hpp"
 
 #include "blinky.hpp"
 #include "parser.hpp"
@@ -37,6 +38,7 @@ int main() {
 
 	// SYSTEM initialisation
 	static SYSTEM::DATA system;
+	EEPROM::load(&system, system.mutex_i2c);
 
 	system.uart = std::make_shared<PicoUart>(SYSTEM::UART_NR, SYSTEM::UART_TX_PIN, SYSTEM::UART_RX_PIN, SYSTEM::BAUD_RATE, SYSTEM::STOP_BITS);
 	system.rtu_client = std::make_shared<ModbusClient>(system.uart);
@@ -47,16 +49,16 @@ int main() {
 	system.display = std::make_shared<ssd1306>(system.i2c_dev);
 	
 	// TASK creation
-	task_create_blinky();
-	task_create_parser(&system);
-	task_create_controller(&system);
-	task_create_ssd1306(&system);
-	task_create_valve(&system);
-	system.input_queue = create_local_inputs();
-	system.sdp610_queue = task_create_sdp610(system.mutex_i2c);
-	system.gmp252_queue = task_create_gmp252(system.mutex_uart, system.rtu_client);
-	system.hmp60_queue = task_create_hmp60(system.mutex_uart, system.rtu_client);
-	//system.mio_queue = task_create_mio(system.mutex_uart, system.rtu_client);
+	BLINKY::create_task();
+	PARSER::create_task(&system);
+	CONTROLLER::create_task(&system);
+	OLED::create_task(&system);
+	VALVE::create_task(&system);
+	system.input_queue = LOCAL_INPUTS::create();
+	system.sdp610_queue = SDP610::create_task(system.mutex_i2c);
+	system.gmp252_queue = GMP252::create_task(system.mutex_uart, system.rtu_client);
+	system.hmp60_queue = HMP60::create_task(system.mutex_uart, system.rtu_client);
+	system.mio_queue = FAN::create_task(system.mutex_uart, system.rtu_client);
 
 	vTaskStartScheduler();
     while(true);

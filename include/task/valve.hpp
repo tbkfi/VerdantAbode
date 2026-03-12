@@ -21,17 +21,18 @@
 
 
 namespace VALVE {
-	constexpr bool DEBUG = true; // Print debugs?
+	constexpr bool DEBUG = false; // Print debugs?
 
 	constexpr uint8_t PIN = 27;
 	constexpr uint16_t POLL_INTERVAL_MS = 50;
-	constexpr uint16_t OPEN_TIME_MS = 1000;
-	constexpr uint16_t COOLDOWN_MS = 3000;
+	constexpr uint16_t OPEN_TIME_MS = 250;
+	constexpr uint16_t COOLDOWN_MS = 1750;
 	constexpr UBaseType_t TASK_PRIORITY = tskIDLE_PRIORITY + 5;
 	constexpr uint16_t STACK_DEPTH = 1024;
+
+	void task(void* param);
+	void create_task(SYSTEM::DATA* ctx);
+
+	void open(bool open, SYSTEM::DATA* ctx);
 }
 
-void task_valve(void* param);
-void task_create_valve(SYSTEM::DATA* ctx);
-
-void valve_open(bool open, SYSTEM::DATA* ctx);

@@ -6,16 +6,15 @@
 #include "blinky.hpp"
 
 
-void task_create_blinky(void) {
+void BLINKY::create_task(void) {
 	static BLINKY::CTX ctx = {
 		.pin = BLINKY::PIN,
 		.delay_ms = BLINKY::DELAY_MS
 	};
-
-	xTaskCreate(task_blinky, "LED_1", 256, (void *) &ctx, BLINKY::TASK_PRIO, NULL);
+	xTaskCreate(BLINKY::task, "BLINKY", 256, (void *) &ctx, BLINKY::TASK_PRIO, NULL);
 }
 
-void task_blinky(void *param) {
+void BLINKY::task(void *param) {
 	BLINKY::CTX *ctx = (BLINKY::CTX*) param;
 
     gpio_init(ctx->pin);

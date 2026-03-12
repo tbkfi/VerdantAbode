@@ -6,7 +6,7 @@
 #include "mio.hpp"
 
 
-QueueHandle_t task_create_mio(SemaphoreHandle_t mutex_uart, std::shared_ptr<ModbusClient> rtu_client) {
+QueueHandle_t FAN::create_task(SemaphoreHandle_t mutex_uart, std::shared_ptr<ModbusClient> rtu_client) {
 	static FAN::CTX ctx;
 	ctx.mutex = mutex_uart;
 	ctx.rtu_client = rtu_client;
@@ -18,11 +18,11 @@ QueueHandle_t task_create_mio(SemaphoreHandle_t mutex_uart, std::shared_ptr<Modb
 	}
 	vQueueAddToRegistry(ctx.que, "MIO");
 
-	xTaskCreate(task_mio, "FAN_CTL", FAN::STACK_DEPTH, (void*) &ctx, FAN::TASK_PRIORITY, NULL);
+	xTaskCreate(FAN::task, "FAN_CTL", FAN::STACK_DEPTH, (void*) &ctx, FAN::TASK_PRIORITY, NULL);
 	return ctx.que;
 }
 
-void task_mio(void *param) {
+void FAN::task(void *param) {
 	FAN::CTX* ctx = (FAN::CTX*) param;
 	ModbusRegister fan(ctx->rtu_client, FAN::ADDRESS, FAN::REGISTER::SPEED_CTL);
 
@@ -45,7 +45,7 @@ void task_mio(void *param) {
 	}
 }
 
-void fan_set_speed(int speed_percentage, QueueHandle_t que) {
+void FAN::set_speed(int speed_percentage, QueueHandle_t que) {
 	FAN::QUE_ELEMENT e;
 	int one_pr = FAN::SPEED_MAX / 100;
 	e.time_ms = pdTICKS_TO_MS(xTaskGetTickCount());
@@ -58,7 +58,7 @@ void fan_set_speed(int speed_percentage, QueueHandle_t que) {
 
 
 /*
-void fan_speed_target (void* ctx, int target, int steps) {
+void FAN::set_target(void* ctx, int target, int steps) {
     SYSTEM::DATA* context = (SYSTEM::DATA*) ctx;
 
     // LAST_SPEED -> to, using # of steps

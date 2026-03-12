@@ -21,7 +21,7 @@ namespace BLINKY {
 		uint16_t delay_ms;
 	};
 
+	void task(void *param);
+	void create_task(void);
 }
 
-void task_blinky(void *param);
-void task_create_blinky(void);

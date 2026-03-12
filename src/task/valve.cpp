@@ -7,12 +7,12 @@
 #include "system.hpp"
 
 
-void task_create_valve(SYSTEM::DATA* ctx) {
-	xTaskCreate(task_valve, "VALVE", VALVE::STACK_DEPTH, (void *) ctx, VALVE::TASK_PRIORITY, NULL);
+void VALVE::create_task(SYSTEM::DATA* ctx) {
+	xTaskCreate(VALVE::task, "VALVE", VALVE::STACK_DEPTH, (void *) ctx, VALVE::TASK_PRIORITY, NULL);
 }
 
 
-void task_valve(void* param) {
+void VALVE::task(void* param) {
 	SYSTEM::DATA* ctx = (SYSTEM::DATA*) param;
 
 	TickType_t last_ran = xTaskGetTickCount();
@@ -65,7 +65,7 @@ void task_valve(void* param) {
 	}
 }
 
-void valve_open(bool open, SYSTEM::DATA* ctx) {
+void VALVE::open(bool open, SYSTEM::DATA* ctx) {
 	if (VALVE::DEBUG) printf("[VALVE] (cmd): %s.\n", open ? "OPEN" : "CLOSE");
 	if (open) xEventGroupSetBits(ctx->events, SYSTEM::FLAG_VALVE_OPEN);
 	else xEventGroupClearBits(ctx->events, SYSTEM::FLAG_VALVE_OPEN);

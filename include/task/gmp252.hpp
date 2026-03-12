@@ -16,11 +16,6 @@
 #include <modbus_register.hpp>
 
 
-void task_gmp252(void *param);
-QueueHandle_t
-task_create_gmp252
-(SemaphoreHandle_t mutex_i2c, std::shared_ptr<ModbusClient> rtu_client);
-
 namespace GMP252 {
     namespace REGISTER {
         // https://www.fondriest.com/pdf/vaisala_gmp252_manual.pdf, table 56
@@ -34,7 +29,7 @@ namespace GMP252 {
     constexpr uint16_t ADDRESS = 240;
 
 	constexpr bool DEBUG = false; // Print debugs?
-	constexpr uint16_t POLL_INTERVAL_MS = 500;
+	constexpr uint16_t POLL_INTERVAL_MS = 1000;
 
 	constexpr UBaseType_t TASK_PRIORITY = tskIDLE_PRIORITY + 3;
 	constexpr uint16_t STACK_DEPTH = 2048;
@@ -48,27 +43,12 @@ namespace GMP252 {
 		QueueHandle_t que;
 	} CTX;
 
-	typedef struct  {
+	typedef struct {
 	// Individual measurements
 		uint32_t time_ms;
 		int16_t data;
 	} QUE_ELEMENT;
 
-    // NOTE: implement(maybe).
-    #if 0
-    #define DBG_PRINT(...) \
-        do { \
-            if (debug::enabled) { \
-                printf("TYPE: "); \
-                printf(__VA_ARGS__); \
-            } \
-        } while(0)
-
-    void dbg_print(__VA_ARGS__)
-    {
-        if (DEBUG)
-            printf("[GMP252]");
-            printf(__VA_ARGS__);
-    }
-    #endif
+	void task(void *param);
+	QueueHandle_t create_task (SemaphoreHandle_t mutex_i2c, std::shared_ptr<ModbusClient> rtu_client);
 }

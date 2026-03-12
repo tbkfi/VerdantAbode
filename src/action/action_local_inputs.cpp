@@ -8,6 +8,7 @@
 
 #include "mio.hpp"
 #include "valve.hpp"
+#include "eeprom.hpp"
 
 
 void action_local_input_regular(SYSTEM::DATA* ctx, LOCAL_INPUTS::QUE_ELEMENT* e) {
@@ -29,13 +30,10 @@ void action_local_input_regular(SYSTEM::DATA* ctx, LOCAL_INPUTS::QUE_ELEMENT* e)
 			break;
 		case LOCAL_INPUTS::BTN1_PIN:
 		// Unassigned
-			//fan_set_speed(100, ctx->mio_queue);
-			valve_open(false, ctx);
+			EEPROM::save(ctx, ctx->mutex_i2c);
 			break;
 		case LOCAL_INPUTS::BTN2_PIN:
 		// Unassigned
-			//fan_set_speed(0, ctx->mio_queue);
-			valve_open(true, ctx);
 			break;
 		case LOCAL_INPUTS::BTN3_PIN:
 		{ // Toggle MAIN | SETUP state

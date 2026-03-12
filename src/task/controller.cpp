@@ -4,15 +4,16 @@
  * Tuomo Björk
 */
 #include "controller.hpp"
+#include "mio.hpp"
 #include "system.hpp"
 
 
-void task_create_controller(SYSTEM::DATA* ctx) {
-	xTaskCreate(task_controller, "CONTROLLER",
+void CONTROLLER::create_task(SYSTEM::DATA* ctx) {
+	xTaskCreate(CONTROLLER::task, "CONTROLLER",
 			 CONTROLLER::STACK_DEPTH, (void*) ctx, CONTROLLER::TASK_PRIORITY, NULL);
 }
 
-void task_controller(void* param) {
+void CONTROLLER::task(void* param) {
 	SYSTEM::DATA* ctx = (SYSTEM::DATA*)param;
 	
 	TickType_t last_wake = xTaskGetTickCount();
@@ -23,23 +24,23 @@ void task_controller(void* param) {
 
 		if (ctx->val_co2 >= SYSTEM::CO2_CRITICAL) {
 		// CO2 Exceeds CRITICAL
-			valve_open(false, ctx);
-			fan_set_speed(100, ctx->mio_queue);
+			VALVE::open(false, ctx);
+			if (ctx->mio_queue != nullptr) FAN::set_speed(CONTROLLER::PR_FLUSH_CRIT, ctx->mio_queue);
 		}
 		else if (ctx->val_co2 > (ctx->co2_target + SYSTEM::CO2_SPAN)) {
 		// CO2 above target
-			valve_open(false, ctx);
-			fan_set_speed(80, ctx->mio_queue);
+			VALVE::open(false, ctx);
+			if (ctx->mio_queue != nullptr) FAN::set_speed(CONTROLLER::PR_FLUSH_CRIT, ctx->mio_queue);
 		}
 		else if (ctx->val_co2 < (ctx->co2_target - SYSTEM::CO2_SPAN)) {
 		// CO2 below target
-			valve_open(true, ctx);
-			fan_set_speed(0, ctx->mio_queue);
+			VALVE::open(true, ctx);
+			if (ctx->mio_queue != nullptr) FAN::set_speed(0, ctx->mio_queue);
 		}
 		else {
 		// Nominal
-			valve_open(false, ctx);
-			fan_set_speed(0, ctx->mio_queue);
+			VALVE::open(false, ctx);
+			if (ctx->mio_queue != nullptr) FAN::set_speed(0, ctx->mio_queue);
 		}
 	}
 }

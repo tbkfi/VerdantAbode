@@ -6,7 +6,7 @@
 #include "sdp610.hpp"
 
 
-QueueHandle_t task_create_sdp610(SemaphoreHandle_t mutex_i2c) {
+QueueHandle_t SDP610::create_task(SemaphoreHandle_t mutex_i2c) {
 // Helper to automatically create SDP610 task,
 // returns the datapoint queue handle.
 	static SDP610::CTX ctx;
@@ -20,12 +20,12 @@ QueueHandle_t task_create_sdp610(SemaphoreHandle_t mutex_i2c) {
 	vQueueAddToRegistry(ctx.que, "SDP610");
 
 	// Task
-	xTaskCreate(task_sdp610, "SDP610", SDP610::STACK_DEPTH,
+	xTaskCreate(SDP610::task, "SDP610", SDP610::STACK_DEPTH,
 			 (void *) &ctx, SDP610::TASK_PRIORITY, NULL);
 	return ctx.que;
 }
 
-void task_sdp610(void* param) {
+void SDP610::task(void* param) {
 	SDP610::CTX* ctx = (SDP610::CTX*) param;
 
 	int rc = 0;

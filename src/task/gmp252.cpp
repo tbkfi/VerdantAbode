@@ -7,7 +7,7 @@
 
 
 QueueHandle_t
-task_create_gmp252
+GMP252::create_task
 (SemaphoreHandle_t mutex_uart, std::shared_ptr<ModbusClient> rtu_client)
 {
 	static GMP252::CTX ctx;
@@ -21,12 +21,12 @@ task_create_gmp252
 	}
 	vQueueAddToRegistry(ctx.que, "GMP252");
 	
-	xTaskCreate(task_gmp252, "GMP252", GMP252::STACK_DEPTH, (void *) &ctx, GMP252::TASK_PRIORITY, NULL);
+	xTaskCreate(GMP252::task, "GMP252", GMP252::STACK_DEPTH, (void *) &ctx, GMP252::TASK_PRIORITY, NULL);
 
 	return ctx.que;
 }
 
-void task_gmp252(void* param) {
+void GMP252::task(void* param) {
 	GMP252::CTX* ctx = (GMP252::CTX*) param;
 	ModbusRegister gmp252 (ctx->rtu_client, GMP252::ADDRESS, GMP252::REGISTER::CO2_16);
 

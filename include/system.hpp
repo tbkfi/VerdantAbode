@@ -27,15 +27,16 @@
 
 namespace SYSTEM {
 	// Variables
+	constexpr uint8_t  MAGIC_BYTE = 0x42;   // EEPROM magic
 	constexpr uint16_t CO2_TARGET = 800;    // Target CO2 level (ppm)
-	constexpr uint16_t CO2_SPAN = 15;       // +- tolerance around CO2_TARGET
+	constexpr uint16_t CO2_SPAN   = 15;     // +- tolerance around CO2_TARGET
 
 	constexpr uint16_t CO2_FLOOR = 200;     // Lowest allowed CO2 target
-	constexpr uint16_t CO2_CEIL = 1500;     // Highest allowed CO2 target
-	constexpr uint16_t CO2_INCR = 25;       // Delta per ctrl increment
+	constexpr uint16_t CO2_CEIL  = 1500;    // Highest allowed CO2 target
+	constexpr uint16_t CO2_INCR  = 5;       // Delta per ctrl increment
 	constexpr uint16_t CO2_CRITICAL = 2000; // Critical CO2 limit
 
-	constexpr uint8_t SSID_BUFF_LEN = 128;
+	constexpr uint8_t SSID_BUFF_LEN = 32;
 
 	// Event flags
 	constexpr EventBits_t FLAG_CO2_HIGH       = ( 1 << 0 );  // Indicates high CO2
@@ -46,19 +47,20 @@ namespace SYSTEM {
 	constexpr EventBits_t FLAG_VALVE_OPEN     = ( 1 << 5 );  // CO2 valve is open
 
 	// Uart & Modbus
-	constexpr uint8_t UART_NR = 1;
-	constexpr uint8_t UART_TX_PIN = 4;
-	constexpr uint8_t UART_RX_PIN = 5;
-	constexpr uint16_t BAUD_RATE = 9600;
-	constexpr uint8_t STOP_BITS = 2;
+	constexpr uint8_t  UART_NR     = 1;
+	constexpr uint8_t  UART_TX_PIN = 4;
+	constexpr uint8_t  UART_RX_PIN = 5;
+	constexpr uint16_t BAUD_RATE   = 9600;
+	constexpr uint8_t  STOP_BITS   = 2;
 
 	struct DATA {
 	// System State
 		EventGroupHandle_t events = xEventGroupCreate();
 
-		uint32_t co2_target = SYSTEM::CO2_TARGET;  // Target CO2 level
-		char* wifi_ssid[SSID_BUFF_LEN] = {0};      // Wifi SSID
-		char* wifi_pass[SSID_BUFF_LEN] = {0};      // Wifi Password
+		uint8_t magic = 0x42;
+		int16_t co2_target = SYSTEM::CO2_TARGET;  // Target CO2 level
+		char* wifi_ssid[SSID_BUFF_LEN] = {0};     // Wifi SSID
+		char* wifi_pass[SSID_BUFF_LEN] = {0};     // Wifi Password
 		uint8_t wifi_ssid_pos = 0;
 		uint8_t wifi_pass_pos = 0;
 
@@ -86,8 +88,8 @@ namespace SYSTEM {
 		QueueHandle_t mio_queue    = nullptr;  // MIO::PARAM->que
 
 		// Devices
-		std::shared_ptr<PicoUart>     uart       = nullptr;
-		std::shared_ptr<ModbusClient> rtu_client = nullptr;
+		std::shared_ptr<PicoUart>      uart       = nullptr;
+		std::shared_ptr<ModbusClient>  rtu_client = nullptr;
 		
 		std::shared_ptr<PicoI2CBus>    i2c_bus = nullptr;
 		std::shared_ptr<PicoI2CDevice> i2c_dev = nullptr;
