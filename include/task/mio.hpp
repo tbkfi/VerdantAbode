@@ -19,7 +19,7 @@ namespace FAN {
     };
     constexpr uint16_t ADDRESS = 1;
 
-	constexpr bool DEBUG = false; // Print debugs?
+	constexpr bool DEBUG = true; // Print debugs?
 	constexpr uint16_t POLL_INTERVAL_MS = 1 * 1000;
 
 	constexpr UBaseType_t TASK_PRIORITY = tskIDLE_PRIORITY + 10;

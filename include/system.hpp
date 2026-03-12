@@ -24,6 +24,14 @@
 #include "PicoI2CDevice.h"
 #include "mio.hpp"
 
+#define DBG_PRINT(flag, module, ...) \
+    do { \
+        if (flag) { \
+            printf("[%s] ", module); \
+            printf(__VA_ARGS__); \
+            printf("\n"); \
+        } \
+    } while (0);
 
 namespace SYSTEM {
 	// Variables
@@ -44,6 +52,7 @@ namespace SYSTEM {
 	constexpr uint32_t FLAG_WIFI_PFIELD    = ( 1 << 3 ); // Pass-field selected?
 	constexpr uint32_t FLAG_WIFI_CONNECTED = ( 1 << 4 ); // Wifi connetion status
 	constexpr uint32_t FLAG_VALVE_OPEN     = ( 1 << 5 ); // CO2 valve is open
+    constexpr uint32_t FLAG_GOTO_MAIN = ( 1 << 6 );
 
 	struct DATA {
 	// System State
@@ -58,7 +67,6 @@ namespace SYSTEM {
 		QueueHandle_t input_queue;      // Local inputs
 		QueueHandle_t sdp610_queue;     // SDP610::PARAM->que
 		QueueHandle_t gmp252_queue;     // GMP252::PARAM->que
-        QueueHandle_t mio_queue;
 		QueueHandle_t hmp60_queue;      // HMP60::PARAM->que
 		QueueHandle_t mio_queue;        // MIO::PARAM->que
 
@@ -79,8 +87,54 @@ namespace SYSTEM {
 
 		// Input Related
 		char setup_c;   // Current Character (setup input fields)
+        int wifi_setup_row = 0;
+        int wifi_setup_column = 0;
+        int wifi_setup_field = 0; // 0 for SSID and 1 for password
 		int ctr_input;  // Auxiliary ctr for smoothing inputs
+    
+        std::string SSID;
+        std::string PASSWORD;
+        
+        unsigned current_view = 0; // default to MAIN view
 	};
+    // usage SYSTEM::VIEW::WIFI_SETUP
+    namespace VIEW
+    {
+        const unsigned MAIN = 0;
+        const unsigned WIFI_SETUP = 1;
+        const unsigned WIFI_CONNECTION = 2;
+    }
+
+    namespace CHARSET {
+        constexpr const char* CHAR_ROW_ALPHA_LOWER_0 =
+            "abcdefghijklmnop";
+        constexpr const char* CHAR_ROW_ALPHA_LOWER_1 =
+            "qrstuvwxyz";
+
+        constexpr const char* CHAR_ROW_ALPHA_UPPER_0 =
+            "ABCDEFGHIJKLMNOP";
+        constexpr const char* CHAR_ROW_ALPHA_UPPER_1 =
+            "QRSTUVWXYZ";
+        
+        constexpr const char* CHAR_ROW_SPECIAL_0 =
+            "0123456789_ +!#$%";
+        constexpr const char* CHAR_ROW_SPECIAL_1 =
+            "^&()[]<>= /\\";
+
+        constexpr const char* CHAR_ROW_CONTROL =
+            "<%N+ SPECIAL CHARACTERS";
+
+        constexpr const char* ASCII[] = {
+            CHAR_ROW_ALPHA_LOWER_0,
+            CHAR_ROW_ALPHA_LOWER_1,
+            CHAR_ROW_ALPHA_UPPER_0,
+            CHAR_ROW_ALPHA_UPPER_1,
+            CHAR_ROW_SPECIAL_0,
+            CHAR_ROW_SPECIAL_1,
+            CHAR_ROW_CONTROL
+        };
+        constexpr const int ROW_COUNT = 7;
+    }
 
 	// Modbus
 	constexpr uint8_t UART_NR = 1;

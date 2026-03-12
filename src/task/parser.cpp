@@ -36,9 +36,12 @@ void task_parser(void* param) {
 
 		if (ctx->input_queue != nullptr && xQueueReceive(ctx->input_queue, &e_local_input, 0) == pdTRUE) {
 		// Local inputs
-			//if (flags & SYSTEM::FLAG_WIFI_SETUP) action_wifi_setup(ctx, &e_local_input);
-			//else action_local_input_regular(ctx, &e_local_input);
-			action_local_input_regular(ctx, &e_local_input);
+            DBG_PRINT(true, "PARSER", "%u", flags & SYSTEM::FLAG_WIFI_SETUP);
+
+			if (flags & SYSTEM::FLAG_WIFI_SETUP)
+                action_local_input_wifi_setup(ctx, &e_local_input);
+			else
+                action_local_input_regular(ctx, &e_local_input);
 		}
 		if (ctx->sdp610_queue != nullptr && xQueueReceive(ctx->sdp610_queue, &e_sdp610, 0) == pdTRUE) {
 		// SDP610 for Pa
