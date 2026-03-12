@@ -66,6 +66,7 @@ namespace SYSTEM {
 
 		// Sensor & Actuator
 		int16_t val_co2  = 0;
+		float   val_rh   = 0;
 		float   val_temp = 0;
 		float   val_pa   = 0;
 		int     val_fan  = 0;

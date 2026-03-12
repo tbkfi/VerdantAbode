@@ -49,6 +49,7 @@ namespace OLED {
 	void frag_co2(SYSTEM::DATA* ctx);
 	void frag_temp(SYSTEM::DATA* ctx);
 	void frag_pa(SYSTEM::DATA* ctx);
+	void frag_rh(SYSTEM::DATA* ctx);
 	void frag_wifi_status(SYSTEM::DATA* ctx);
 
 	void frag_setup_c(SYSTEM::DATA* ctx);

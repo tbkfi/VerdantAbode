@@ -24,16 +24,16 @@ namespace HMP60 {
 
 	namespace REGISTER {
 		// docs: https://www.fondriest.com/pdf/vaisala_hmp60-110_manual.pdf
-		constexpr uint32_t T = 0x0002;
+		constexpr uint32_t Rh = 0x0000; // 2 consecutive (lsw+msw)
+		constexpr uint32_t T = 0x0002;  // 2 consecutive (lsw+msw)
 	};
 
 	constexpr uint16_t ADDRESS = 241;
-	constexpr uint16_t POLL_INTERVAL_MS = 1000;
-	//constexpr uint16_t INTEGRATION_TIME_MS = 12 * 1000;
+	constexpr uint16_t POLL_INTERVAL_MS = 500;
 
 	constexpr UBaseType_t TASK_PRIORITY = tskIDLE_PRIORITY + 3;
-	constexpr uint16_t STACK_DEPTH = 2048;
-	constexpr uint8_t QUE_LEN = 8;
+	constexpr uint16_t STACK_DEPTH = 1024;
+	constexpr uint8_t QUE_LEN = 16;
 
 	struct CTX {
 	// Task Context
@@ -45,7 +45,8 @@ namespace HMP60 {
 	struct QUE_ELEMENT {
 	// Individual measurements
 		uint32_t time_ms;
-		float data;
+		float data_t;  // temperature
+		float data_rh; // relative humidity
 	};
 
 	void task(void *param);

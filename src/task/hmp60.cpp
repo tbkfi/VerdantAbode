@@ -26,10 +26,14 @@ QueueHandle_t HMP60::create_task(SemaphoreHandle_t mutex_uart,
 
 void HMP60::task(void* param) {
 	HMP60::CTX* ctx = (HMP60::CTX*) param;
-	HMP60::QUE_ELEMENT e;
 
-	ModbusRegister reg_lsw(ctx->rtu_client, HMP60::ADDRESS, HMP60::REGISTER::T);
-	ModbusRegister reg_msw(ctx->rtu_client, HMP60::ADDRESS, HMP60::REGISTER::T + 1);
+	// Rh
+	ModbusRegister rh_reg_lsw(ctx->rtu_client, HMP60::ADDRESS, HMP60::REGISTER::Rh);
+	ModbusRegister rh_reg_msw(ctx->rtu_client, HMP60::ADDRESS, HMP60::REGISTER::Rh + 1);
+
+	// T
+	ModbusRegister T_reg_lsw(ctx->rtu_client, HMP60::ADDRESS, HMP60::REGISTER::T);
+	ModbusRegister T_reg_msw(ctx->rtu_client, HMP60::ADDRESS, HMP60::REGISTER::T + 1);
 
 	TickType_t last_ran = xTaskGetTickCount();
 	const TickType_t poll_time = pdMS_TO_TICKS(HMP60::POLL_INTERVAL_MS);
@@ -43,25 +47,36 @@ void HMP60::task(void* param) {
 			continue;
 		}
 
-		// Read Measurement
-		if (HMP60::DEBUG) printf("[HMP60] Attempting to read...\n");
+		HMP60::QUE_ELEMENT e;
 		e.time_ms = pdTICKS_TO_MS(xTaskGetTickCount());
-		uint16_t word_lsw = reg_lsw.read();
-		uint16_t word_msw = reg_msw.read();
+
+		uint16_t word_lsw = 0;
+		uint16_t word_msw = 0;
+		uint32_t combined = 0;
+
+		// Relative Humidity
+		if (HMP60::DEBUG) printf("[HMP60] (read): attempt to get Rh ...\n");
+		word_lsw = rh_reg_lsw.read();
+		word_msw = rh_reg_msw.read();
+
+		combined = ((uint32_t)word_msw << 16) | word_lsw;
+		memcpy(&e.data_rh, &combined , sizeof(float));
+
+		word_lsw = 0;
+		word_msw = 0;
+		combined = 0;
+
+		// Temperature
+		if (HMP60::DEBUG) printf("[HMP60] (read): attempt to get T...\n");
+		e.time_ms = pdTICKS_TO_MS(xTaskGetTickCount());
+		word_lsw = T_reg_lsw.read();
+		word_msw = T_reg_msw.read();
 		xSemaphoreGive(ctx->mutex);
 
-		// LSW+MSW
-		uint32_t lsw_msw = ( (uint32_t)word_msw << 16) | word_lsw;
-
-		// Reading is 'float'
-		float reading;
-		memcpy(&reading, &lsw_msw, sizeof(float));
-
-		// Set element
-		e.time_ms = pdTICKS_TO_MS(xTaskGetTickCount());
-		e.data = reading;
+		combined = ((uint32_t)word_msw << 16) | word_lsw;
+		memcpy(&e.data_t, &combined , sizeof(float));
 
 		xQueueSend(ctx->que, &e, 0);
-		if (HMP60::DEBUG) printf("[%lu] HMP60: %.2f C\n", e.time_ms, e.data);
+		if (HMP60::DEBUG) printf("[%lu] HMP60: %.2f C, %f Rh\n", e.time_ms, e.data_t, e.data_rh);
 	}
 }

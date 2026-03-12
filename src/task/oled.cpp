@@ -49,14 +49,14 @@ void OLED::view_default(SYSTEM::DATA* ctx) {
 	OLED::frag_co2(ctx);
 	OLED::frag_temp(ctx);
 	OLED::frag_pa(ctx);
+	OLED::frag_rh(ctx);
 	OLED::frag_wifi_status(ctx);
 
-	ctx->display->text("VIEW:  MAIN", 0, 48, 1); 
+	//ctx->display->text("VIEW:  MAIN", 0, 48, 1); 
 	ctx->display->show();
 }
 
 void OLED::view_wifi_setup(SYSTEM::DATA* ctx) {
-// TODO
 	ctx->display->fill(0);
 	OLED::frag_setup_fields(ctx);
 	OLED::frag_setup_c(ctx);
@@ -99,11 +99,20 @@ void OLED::frag_pa(SYSTEM::DATA* ctx) {
 	//ctx->display->text("Pa", 85, 24, 1);
 }
 
+void OLED::frag_rh(SYSTEM::DATA* ctx) {
+	char buffer[16];
+	snprintf(buffer, sizeof(buffer), "%.2f", ctx->val_rh); 
+	
+	ctx->display->text("Rh  :", 0, 36, 1);
+	ctx->display->text(buffer, 40, 36, 1);
+	//ctx->display->text("Rh", 85, 24, 1);
+}
+
 void OLED::frag_wifi_status(SYSTEM::DATA* ctx) {
 	bool is_connected = (xEventGroupGetBits(ctx->events) & SYSTEM::FLAG_WIFI_CONNECTED);
 	
-	ctx->display->text("WiFi:", 0, 36, 1);
-	ctx->display->text(is_connected ? "CONN." : "DISC.", 40, 36, 1); 
+	ctx->display->text("WiFi:", 0, 48, 1);
+	ctx->display->text(is_connected ? "CONN." : "DISC.", 40, 48, 1); 
 }
 
 void OLED::frag_setup_c(SYSTEM::DATA* ctx) {
