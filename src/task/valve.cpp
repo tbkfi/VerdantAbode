@@ -22,7 +22,7 @@ void VALVE::task(void* param) {
 	gpio_set_dir(VALVE::PIN, GPIO_OUT);
 	gpio_put(VALVE::PIN, false);
 
-	ctx->time_valve_closed_ms = pdTICKS_TO_MS(xTaskGetTickCount()) - VALVE::COOLDOWN_MS;
+	ctx->time_valve_closed_ms = pdTICKS_TO_MS(xTaskGetTickCount());
 
 	while (true) {
 		vTaskDelayUntil(&last_ran, poll_time);
