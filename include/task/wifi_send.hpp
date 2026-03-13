@@ -1,3 +1,8 @@
+/* VerdantAbode
+ * wifi_send.hpp
+ *
+ * Tuomo Björk
+*/
 #pragma once
 
 #include <cstdio>

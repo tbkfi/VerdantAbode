@@ -1,3 +1,8 @@
+/* VerdantAbode
+ * wifi.hpp
+ *
+ * Tuomo Björk
+*/
 #pragma once
 
 #include <stdio.h>
@@ -25,7 +30,4 @@ namespace WIFI {
 
 	void create_task(SYSTEM::DATA* ctx);
 	void task(void *params);
-
-	//static err_t http_callback(void* arg, struct altcp_pcb* pcb, struct pbuf* res, err_t err);
-	//void http_post_test();
 }

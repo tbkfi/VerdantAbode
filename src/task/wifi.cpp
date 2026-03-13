@@ -1,3 +1,8 @@
+/* VerdantAbode
+ * wifi.cpp
+ *
+ * Tuomo Björk
+*/
 #include "wifi.hpp"
 
 #include "pico/cyw43_arch.h"
