@@ -13,12 +13,14 @@ void action_gmp252(SYSTEM::DATA* ctx, GMP252::QUE_ELEMENT* e) {
 	if (e->data != 0) ctx->val_co2 = e->data;
 
 	// CO2 exceeds threshold!
-	if (e->data > ctx->co2_target) {
+	if (e->data >= ctx->co2_target) {
 		xEventGroupSetBits(ctx->events, SYSTEM::FLAG_CO2_HIGH);
+		xEventGroupClearBits(ctx->events, SYSTEM::FLAG_CO2_LOW);
 	}
 
-	// CO2 within threshold!
-	if (xEventGroupGetBits(ctx->events) & SYSTEM::FLAG_CO2_HIGH && e->data <= ctx->co2_target) {
+	// CO2 below threshold
+	if (e->data < ctx->co2_target) {
+		xEventGroupSetBits(ctx->events, SYSTEM::FLAG_CO2_LOW);
 		xEventGroupClearBits(ctx->events, SYSTEM::FLAG_CO2_HIGH);
 	}
 }
