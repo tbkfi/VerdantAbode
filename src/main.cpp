@@ -57,6 +57,7 @@ int main() {
 	system.sdp610_queue = SDP610::create_task(system.mutex_i2c);
 	system.gmp252_queue = GMP252::create_task(system.mutex_uart, system.rtu_client);
 	system.hmp60_queue = HMP60::create_task(system.mutex_uart, system.rtu_client);
+	system.hmp60_rh_queue = HMP60::create_task_rh(system.mutex_uart, system.rtu_client);
 	system.mio_queue = FAN::create_task(system.mutex_uart, system.rtu_client);
 
 	vTaskStartScheduler();

@@ -6,7 +6,7 @@
 #pragma once
 
 #include "hmp60.hpp"
-
+#include <cstring>
 #include <stdint.h>
 #include <memory>
 #include <bit>
@@ -25,6 +25,7 @@ namespace HMP60 {
 	namespace REGISTER {
 		// docs: https://www.fondriest.com/pdf/vaisala_hmp60-110_manual.pdf
 		constexpr uint32_t T = 0x0002;
+        constexpr uint32_t RH = 0x0000;
 	};
 
 	constexpr uint16_t ADDRESS = 241;
@@ -40,6 +41,7 @@ namespace HMP60 {
 		std::shared_ptr<ModbusClient> rtu_client;
 		SemaphoreHandle_t mutex;
 		QueueHandle_t que;
+        QueueHandle_t que_rh;
 	};
 
 	struct QUE_ELEMENT {
@@ -49,6 +51,8 @@ namespace HMP60 {
 	};
 
 	void task(void *param);
+	void task_rh(void *param);
 	QueueHandle_t create_task(SemaphoreHandle_t mutex_uart, std::shared_ptr<ModbusClient> rtu_client);
+    QueueHandle_t create_task_rh(SemaphoreHandle_t mutex_uart, std::shared_ptr<ModbusClient> rut_client);
 }
 

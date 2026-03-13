@@ -24,21 +24,35 @@ void OLED::task(void* param) {
 		if (xSemaphoreTake(ctx->mutex_i2c, pdMS_TO_TICKS(50)) != pdTRUE) {
 		// Mutex unavailable
 			if (OLED::DEBUG) printf("[SSD1306] Couldn't get Mutex (I2C)!\n");
-		} else {
+            continue;
+		} 
 		// Mutex available
-			if (OLED::DEBUG) printf("[SSD1306] Screen refresh...\n");
 
-			if (xEventGroupGetBits(ctx->events) & SYSTEM::FLAG_WIFI_SETUP) {
-			// SETUP SCREEN
-				if (OLED::DEBUG) printf("[SSD1306] view: wifi_setup\n");
-				OLED::view_wifi_setup(ctx);
-			} else {
-			// NORMAL SCREEN
-				if (OLED::DEBUG) printf("[SSD1306] view: default\n");
-				OLED::view_default(ctx);
-			}
-			xSemaphoreGive(ctx->mutex_i2c);
-		}
+        if (OLED::DEBUG) printf("[SSD1306] Screen refresh...\n");
+
+        if (xEventGroupGetBits(ctx->events) & SYSTEM::FLAG_WIFI_SETUP) {
+        // SETUP SCREEN
+            if (OLED::DEBUG) printf("[SSD1306] view: wifi_setup\n");
+            OLED::view_wifi_setup(ctx);
+        } else {
+        // NORMAL SCREEN
+            if (OLED::DEBUG) printf("[SSD1306] view: default\n");
+            OLED::view_default(ctx);
+        }
+
+/*
+        if (ctx->current_view == SYSTEM::VIEW::WIFI_SETUP)
+        {
+            if (true) printf("[SSD1306] view: wifi_setup\n");
+            view_wifi_setup(ctx);
+        } else {
+        // NORMAL SCREEN
+            if (true) printf("[SSD1306] view: default\n");
+            view_default(ctx);
+        }
+*/
+
+        xSemaphoreGive(ctx->mutex_i2c);
 	}
 }
 
@@ -55,11 +69,29 @@ void OLED::view_default(SYSTEM::DATA* ctx) {
 	ctx->display->show();
 }
 
-void OLED::view_wifi_setup(SYSTEM::DATA* ctx) {
-// TODO
+void OLED::view_wifi_setup(SYSTEM::DATA* ctx)
+{
+//void frag_setup_fields(SYSTEM::DATA* ctx) {
+//frag_setup_fields(ctx);
+//void frag_setup_c(SYSTEM::DATA* ctx) { //}
+//frag_setup_c(ctx);
 	ctx->display->fill(0);
-	OLED::frag_setup_fields(ctx);
-	OLED::frag_setup_c(ctx);
+
+    int pointer_position = (ctx->wifi_setup_field == 0) ? 0 : 12;
+    ctx->display->text("$", 8 * 4, pointer_position);
+	ctx->display->text("SSID :", 0, 0, 1);
+	ctx->display->text("PASS :", 0, 12, 1);
+
+    ctx->display->text(SYSTEM::CHARSET::ASCII[ctx->wifi_setup_row], 0, 24, 1);
+
+    if (ctx->SSID.size() > 0)
+        ctx->display->text(ctx->SSID.c_str(), 8 * 6, 0, 1);
+
+    if (ctx->PASSWORD.size() > 0)
+        ctx->display->text(ctx->PASSWORD.c_str(), 8 * 6, 12, 1);
+
+    // print a row of chars
+    ctx->display->text("_", 8 * ctx->wifi_setup_column, 26, 1);// cursor
 
 	ctx->display->text("VIEW:  SETUP", 0, 48, 1); 
 	ctx->display->show();
