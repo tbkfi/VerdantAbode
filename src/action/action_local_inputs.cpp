@@ -10,10 +10,6 @@
 #include "valve.hpp"
 #include "eeprom.hpp"
 
-#define __DEBUG_THIS_FILE__ true
-#ifndef __DEBUG_THIS_FILE__
-#define __DEGUG_THIS_FILE__ false
-#endif
 
 void action_local_input_regular(SYSTEM::DATA* ctx, LOCAL_INPUTS::QUE_ELEMENT* e) {
 // Action(s) taken when a LOCAL INPUT is received.
@@ -56,8 +52,8 @@ void action_local_input_regular(SYSTEM::DATA* ctx, LOCAL_INPUTS::QUE_ELEMENT* e)
 }
 
 void action_local_input_wifi_setup
-(SYSTEM::DATA* ctx, LOCAL_INPUTS::QUE_ELEMENT* e)
-{
+(SYSTEM::DATA* ctx, LOCAL_INPUTS::QUE_ELEMENT* e) {
+// Pavel Shishkin
     ctx->current_view = SYSTEM::VIEW::WIFI_SETUP;
 
 	//printf("[%lu] WIFI_SETUP(local_input): %u\n", e->time_ms, e->pin);
@@ -65,7 +61,7 @@ void action_local_input_wifi_setup
     {
     case LOCAL_INPUTS::ROTA_PIN:
         // cursor ++
-        DBG_PRINT(__DEBUG_THIS_FILE__, "WIFI_SETUP:EVENT", "%u", e->pin)
+        //DBG_PRINT(__DEBUG_THIS_FILE__, "WIFI_SETUP:EVENT", "%u", e->pin)
 
         // if column is less than the length of the current row
         // rows are defined in 'action/action_wifi_setup.hpp'
@@ -78,7 +74,7 @@ void action_local_input_wifi_setup
         break;
 
     case LOCAL_INPUTS::ROTB_PIN:
-        DBG_PRINT(__DEBUG_THIS_FILE__, "WIFI_SETUP:EVENT", "%u", e->pin)
+        //DBG_PRINT(__DEBUG_THIS_FILE__, "WIFI_SETUP:EVENT", "%u", e->pin)
         // cursor --
         // strlen())
         if (ctx->wifi_setup_column > 0)
@@ -95,7 +91,7 @@ void action_local_input_wifi_setup
     case LOCAL_INPUTS::BTN3_PIN:
 
         // quit wifi setup
-        DBG_PRINT(__DEBUG_THIS_FILE__, "WIFI_SETUP:QUIT", "%u", e->pin)
+        //DBG_PRINT(__DEBUG_THIS_FILE__, "WIFI_SETUP:QUIT", "%u", e->pin)
         xEventGroupClearBits(ctx->events, SYSTEM::FLAG_WIFI_SETUP);
 
         break;
@@ -151,11 +147,11 @@ void action_local_input_wifi_setup
                 ctx->PASSWORD.push_back(c);
         }
 
-        DBG_PRINT(__DEBUG_THIS_FILE__, "WIFI_SETUP:INPUT", "%s", ctx->SSID.c_str());
+        //DBG_PRINT(__DEBUG_THIS_FILE__, "WIFI_SETUP:INPUT", "%s", ctx->SSID.c_str());
         break;
     }
     case LOCAL_INPUTS::BTN1_PIN:
-        DBG_PRINT(__DEBUG_THIS_FILE__, "WIFI_SETUP:EVENT", "%u", e->pin)
+        //DBG_PRINT(__DEBUG_THIS_FILE__, "WIFI_SETUP:EVENT", "%u", e->pin)
         // row --
         if (ctx->wifi_setup_row > 0)
             ctx->wifi_setup_row --;
@@ -174,4 +170,3 @@ void action_local_input_wifi_setup
     
     }
 }
-

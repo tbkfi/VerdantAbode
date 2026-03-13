@@ -39,19 +39,6 @@ void OLED::task(void* param) {
             if (OLED::DEBUG) printf("[SSD1306] view: default\n");
             OLED::view_default(ctx);
         }
-
-/*
-        if (ctx->current_view == SYSTEM::VIEW::WIFI_SETUP)
-        {
-            if (true) printf("[SSD1306] view: wifi_setup\n");
-            view_wifi_setup(ctx);
-        } else {
-        // NORMAL SCREEN
-            if (true) printf("[SSD1306] view: default\n");
-            view_default(ctx);
-        }
-*/
-
         xSemaphoreGive(ctx->mutex_i2c);
 	}
 }
