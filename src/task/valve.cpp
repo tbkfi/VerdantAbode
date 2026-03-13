@@ -5,6 +5,7 @@
 */
 #include "valve.hpp"
 #include "system.hpp"
+#include "eeprom.hpp"
 
 
 void VALVE::create_task(SYSTEM::DATA* ctx) {
@@ -57,6 +58,7 @@ void VALVE::task(void* param) {
 
 				// Enforce cooldown before next open is permitted
 				ctx->time_valve_closed_ms = now_ms;
+				EEPROM::save(ctx);
 				
 				if (should_open) xEventGroupClearBits(ctx->events, SYSTEM::FLAG_VALVE_OPEN);
 				if (VALVE::DEBUG) printf("[VALVE] (status): CLOSED. Cooldown started.\n");
