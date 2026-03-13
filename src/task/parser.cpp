@@ -55,10 +55,5 @@ void PARSER::task(void* param) {
 		// HMP60 for Temperature
 			action_hmp60(ctx, &e_hmp60);
 		}
-
-		if (ctx->hmp60_rh_queue != nullptr && xQueueReceive(ctx->hmp60_rh_queue, &e_hmp60, 0) == pdTRUE) {
-		// HMP60 for Relative Humidity
-			action_hmp60_rh(ctx, &e_hmp60);
-		}
 	}
 }

@@ -19,7 +19,8 @@ bool EEPROM::save(SYSTEM::DATA* ctx) {
 
 	// Write
 	bool status = false;
-	if (xSemaphoreTake(ctx->mutex_i2c, portMAX_DELAY) == pdTRUE) {
+	//if (xSemaphoreTake(ctx->mutex_i2c, portMAX_DELAY) == pdTRUE) {
+	if (xSemaphoreTake(ctx->mutex_i2c, pdMS_TO_TICKS(100)) == pdTRUE) {
 		status = EEPROM::write(EEPROM::DATA_ADDR, (uint8_t*)&data, sizeof(EEPROM::TABLE));
 		xSemaphoreGive(ctx->mutex_i2c);
 	}
@@ -35,7 +36,7 @@ bool EEPROM::load(SYSTEM::DATA* ctx) {
 
 	// Get the data
 	bool status = false;
-	if (xSemaphoreTake(ctx->mutex_i2c, portMAX_DELAY) == pdTRUE) {
+	if (xSemaphoreTake(ctx->mutex_i2c, pdMS_TO_TICKS(100)) == pdTRUE) {
 		status = EEPROM::read(EEPROM::DATA_ADDR, (uint8_t*) &data, sizeof(EEPROM::TABLE));
 		xSemaphoreGive(ctx->mutex_i2c);
 	}

@@ -29,9 +29,9 @@ namespace OLED {
 	constexpr uint8_t PIN_SCL = 15;
 	constexpr uint8_t PIN_SDA = 14;
 
-	constexpr bool DEBUG = false; // print debugs?
+	constexpr bool DEBUG = true; // print debugs?
 
-	constexpr uint8_t TASK_PRIO = tskIDLE_PRIORITY + 1;
+	constexpr uint8_t TASK_PRIO = tskIDLE_PRIORITY + 10;
 	constexpr uint16_t INTERVAL_MS = 250;
 	constexpr uint16_t STACK_DEPTH = 1024;
 	constexpr uint32_t I2C_TIMEOUT_US = 10 * 1000;

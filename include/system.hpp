@@ -55,6 +55,7 @@ namespace SYSTEM
 	constexpr EventBits_t FLAG_WIFI_PFIELD    = ( 1 << 3 );  // Pass-field selected?
 	constexpr EventBits_t FLAG_WIFI_CONNECTED = ( 1 << 4 );  // Wifi connetion status
 	constexpr EventBits_t FLAG_VALVE_OPEN     = ( 1 << 5 );  // CO2 valve is open
+	constexpr EventBits_t FLAG_WIFI_SETUP_READY = ( 1 << 6 );  // Wifi ready for connect 
 
 	// Uart & Modbus
 	constexpr uint8_t  UART_NR        = 1;
@@ -80,7 +81,6 @@ namespace SYSTEM
 		float   val_temp = 0;
 		float   val_pa   = 0;
 		int     val_fan  = 0;
-        float   val_rh   = 0;
 
 		TickType_t time_valve_opened_ms = 0; // When valve was prev. opened
 		TickType_t time_valve_closed_ms = 0; // When valve was prev. closed

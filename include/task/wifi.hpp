@@ -12,6 +12,7 @@
 #include "portmacro.h"
 #include "projdefs.h"
 #include "task.h"
+#include "event_groups.h"
 
 #include "system.hpp"
 

@@ -24,25 +24,6 @@ QueueHandle_t HMP60::create_task(SemaphoreHandle_t mutex_uart,
 	return ctx.que;
 }
 
-QueueHandle_t HMP60::create_task_rh
-(SemaphoreHandle_t mutex_uart, std::shared_ptr<ModbusClient> rtu_client)
-{
-
-	static HMP60::CTX ctx;
-	ctx.mutex = mutex_uart;
-	ctx.rtu_client = rtu_client;
-	ctx.que = xQueueCreate(HMP60::QUE_LEN, sizeof(HMP60::QUE_ELEMENT));
-
-	// Validation
-	if (ctx.que == NULL) {
-		while (true) printf("[HMP60] Que(RH) is NULL!\n");
-	}
-	vQueueAddToRegistry(ctx.que, "HMP60_RH");
-	
-	xTaskCreate(HMP60::task, "HMP60_RH", HMP60::STACK_DEPTH, (void *) &ctx, HMP60::TASK_PRIORITY, NULL);
-	return ctx.que;
-}
-
 void HMP60::task(void* param) {
 	HMP60::CTX* ctx = (HMP60::CTX*) param;
 

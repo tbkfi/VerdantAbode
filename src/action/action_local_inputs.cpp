@@ -93,6 +93,29 @@ void action_local_input_wifi_setup
         break;
 
     case LOCAL_INPUTS::BTN3_PIN:
+
+        // quit wifi setup
+        DBG_PRINT(__DEBUG_THIS_FILE__, "WIFI_SETUP:QUIT", "%u", e->pin)
+        xEventGroupClearBits(ctx->events, SYSTEM::FLAG_WIFI_SETUP);
+
+        break;
+
+/*
+        DBG_PRINT(__DEBUG_THIS_FILE__, "WIFI_SETUP:EVENT", "%u", e->pin)
+        // row ++
+
+        //                      4 rows indexed 0 - 3
+        if (ctx->wifi_setup_row < SYSTEM::CHARSET::ROW_COUNT)
+            ctx->wifi_setup_row ++;
+        else
+            ctx->wifi_setup_row = 0;
+
+        // if curorsor is beyond current row limit
+        if (ctx->wifi_setup_column > strlen(SYSTEM::CHARSET::ASCII[ctx->wifi_setup_row]))
+            ctx->wifi_setup_column = strlen(SYSTEM::CHARSET::ASCII[ctx->wifi_setup_row]);
+
+*/
+    case LOCAL_INPUTS::BTN2_PIN:
     { // scope
 
         char c = (SYSTEM::CHARSET::ASCII[ctx->wifi_setup_row][ctx->wifi_setup_column]);
@@ -116,6 +139,7 @@ void action_local_input_wifi_setup
                 break;
             case '+':
                 // TODO: WIFI CONNECTION ROUTINE
+                xEventGroupSetBits(ctx->events, SYSTEM::FLAG_WIFI_SETUP_READY);
                 break;
             }
 
@@ -130,29 +154,6 @@ void action_local_input_wifi_setup
         DBG_PRINT(__DEBUG_THIS_FILE__, "WIFI_SETUP:INPUT", "%s", ctx->SSID.c_str());
         break;
     }
-
-/*
-        DBG_PRINT(__DEBUG_THIS_FILE__, "WIFI_SETUP:EVENT", "%u", e->pin)
-        // row ++
-
-        //                      4 rows indexed 0 - 3
-        if (ctx->wifi_setup_row < SYSTEM::CHARSET::ROW_COUNT)
-            ctx->wifi_setup_row ++;
-        else
-            ctx->wifi_setup_row = 0;
-
-        // if curorsor is beyond current row limit
-        if (ctx->wifi_setup_column > strlen(SYSTEM::CHARSET::ASCII[ctx->wifi_setup_row]))
-            ctx->wifi_setup_column = strlen(SYSTEM::CHARSET::ASCII[ctx->wifi_setup_row]);
-
-*/
-    case LOCAL_INPUTS::BTN2_PIN:
-        // quit wifi setup
-        DBG_PRINT(__DEBUG_THIS_FILE__, "WIFI_SETUP:QUIT", "%u", e->pin)
-        xEventGroupClearBits(ctx->events, SYSTEM::FLAG_WIFI_SETUP);
-
-        break;
-
     case LOCAL_INPUTS::BTN1_PIN:
         DBG_PRINT(__DEBUG_THIS_FILE__, "WIFI_SETUP:EVENT", "%u", e->pin)
         // row --
