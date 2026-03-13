@@ -6,7 +6,7 @@
 #pragma once
 
 #include "hmp60.hpp"
-
+#include <cstring>
 #include <stdint.h>
 #include <memory>
 #include <cstring>
@@ -43,6 +43,7 @@ namespace HMP60 {
 		std::shared_ptr<PicoUart> uart;
 		SemaphoreHandle_t mutex;
 		QueueHandle_t que;
+        QueueHandle_t que_rh;
 	};
 
 	struct QUE_ELEMENT {

@@ -6,6 +6,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <string>
 #include <memory>
 
 #include "hardware/i2c.h"
@@ -24,8 +25,17 @@
 #include "PicoI2CBus.h"
 #include "PicoI2CDevice.h"
 
+#define DBG_PRINT(flag, module, ...) \
+    do { \
+        if (flag) { \
+            printf("[%s] ", module); \
+            printf(__VA_ARGS__); \
+            printf("\n"); \
+        } \
+    } while (0);
 
-namespace SYSTEM {
+namespace SYSTEM
+{
 	// Variables
 	constexpr uint8_t  MAGIC_BYTE = 0x42;   // EEPROM magic
 	constexpr uint16_t CO2_TARGET = 800;    // Target CO2 level (ppm)
@@ -70,6 +80,7 @@ namespace SYSTEM {
 		float   val_temp = 0;
 		float   val_pa   = 0;
 		int     val_fan  = 0;
+        float   val_rh   = 0;
 
 		TickType_t time_valve_opened_ms = 0; // When valve was prev. opened
 		TickType_t time_valve_closed_ms = 0; // When valve was prev. closed
@@ -78,6 +89,12 @@ namespace SYSTEM {
 		TickType_t prev_input_time_ms = 0;  // When last input was
 		char setup_c  = 0;                  // Current Character (setup input fields)
 		int ctr_input = 0;                  // Auxiliary ctr for smoothing inputs
+
+        int wifi_setup_row = 0;
+        int wifi_setup_column = 0;
+        int wifi_setup_field = 0; // 0 for SSID and 1 for password
+        std::string SSID;
+        std::string PASSWORD;
 
 		SemaphoreHandle_t mutex_i2c  = xSemaphoreCreateMutex();
 		SemaphoreHandle_t mutex_uart = xSemaphoreCreateMutex();
@@ -95,7 +112,49 @@ namespace SYSTEM {
 		std::shared_ptr<PicoI2CBus>    i2c_bus = nullptr;
 		std::shared_ptr<PicoI2CDevice> i2c_dev = nullptr;
 		std::shared_ptr<ssd1306>       display = nullptr;
+        
+        unsigned current_view = 0;
 	};
+
+    // usage SYSTEM::VIEW::WIFI_SETUP
+    namespace VIEW
+    {
+        const unsigned MAIN = 0;
+        const unsigned WIFI_SETUP = 1;
+        const unsigned WIFI_CONNECTION = 2;
+    }
+
+    namespace CHARSET
+    {
+        constexpr const char* CHAR_ROW_ALPHA_LOWER_0 =
+            "abcdefghijklmnop";
+        constexpr const char* CHAR_ROW_ALPHA_LOWER_1 =
+            "qrstuvwxyz";
+
+        constexpr const char* CHAR_ROW_ALPHA_UPPER_0 =
+            "ABCDEFGHIJKLMNOP";
+        constexpr const char* CHAR_ROW_ALPHA_UPPER_1 =
+            "QRSTUVWXYZ";
+        
+        constexpr const char* CHAR_ROW_SPECIAL_0 =
+            "0123456789_ +!#$%";
+        constexpr const char* CHAR_ROW_SPECIAL_1 =
+            "^&()[]<>= /\\";
+
+        constexpr const char* CHAR_ROW_CONTROL =
+            "<%N+ SPECIAL CHARACTERS";
+
+        constexpr const char* ASCII[] = {
+            CHAR_ROW_ALPHA_LOWER_0,
+            CHAR_ROW_ALPHA_LOWER_1,
+            CHAR_ROW_ALPHA_UPPER_0,
+            CHAR_ROW_ALPHA_UPPER_1,
+            CHAR_ROW_SPECIAL_0,
+            CHAR_ROW_SPECIAL_1,
+            CHAR_ROW_CONTROL
+        };
+        constexpr const int ROW_COUNT = 7;
+    }
 }
 
 namespace Pin {
