@@ -30,10 +30,10 @@ void WIFI::task(void *params) {
 	cyw43_arch_enable_sta_mode();
 
 	while(true) {
-        if (!(SYSTEM::FLAG_WIFI_SETUP_READY & xEventGroupGetBits(ctx->events)))
-        {
-            continue;
-        }
+		if (!(SYSTEM::FLAG_WIFI_SETUP_READY & xEventGroupGetBits(ctx->events)))
+		{
+			continue;
+		}
 
 		rc = cyw43_tcpip_link_status(&cyw43_state, CYW43_ITF_STA);
 
@@ -49,10 +49,10 @@ void WIFI::task(void *params) {
 			if (WIFI::DEBUG) printf("[WIFI] (link): DOWN (%d).\n", rc);
 
 			//rc = cyw43_arch_wifi_connect_timeout_ms
-            // (WIFI::SSID, WIFI::PASS, CYW43_AUTH_WPA2_MIXED_PSK, WIFI::CONN_TIMEOUT_MS);
+			// (WIFI::SSID, WIFI::PASS, CYW43_AUTH_WPA2_MIXED_PSK, WIFI::CONN_TIMEOUT_MS);
 
 			rc = cyw43_arch_wifi_connect_timeout_ms
-            (ctx->SSID.c_str(), ctx->PASSWORD.c_str(), CYW43_AUTH_WPA2_MIXED_PSK, WIFI::CONN_TIMEOUT_MS);
+			(ctx->SSID.c_str(), ctx->PASSWORD.c_str(), CYW43_AUTH_WPA2_MIXED_PSK, WIFI::CONN_TIMEOUT_MS);
 			
 			if (rc == 0) {
 				if (WIFI::DEBUG) printf("[WIFI] (connect): OK (IP: %s)\n", ip4addr_ntoa(netif_ip4_addr(netif_default))); 

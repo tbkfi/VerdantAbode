@@ -53,4 +53,3 @@ namespace EEPROM {
 
 	uint16_t crc16(const uint8_t *pData, size_t len);
 }
-

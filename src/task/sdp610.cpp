@@ -83,7 +83,7 @@ void SDP610::task(void* param) {
 
 					// Expect 3 bytes: MSB, LSB, CRC
 					rc = i2c_read_timeout_us(SDP610::I2C_UNIT, SDP610::ADDR, buffer,
-							   3, false, SDP610::I2C_TIMEOUT_US);
+													3, false, SDP610::I2C_TIMEOUT_US);
 					xSemaphoreGive(ctx->mutex);
 
 					if (rc != 3) {
@@ -96,7 +96,7 @@ void SDP610::task(void* param) {
 						// Construct reading
 						reading_raw = (int16_t) ((buffer[0] << 8) | buffer[1]);
 						if (SDP610::DEBUG) printf("[SDP610] -> [%02x %02x %02x]\n",
-								   buffer[0], buffer[1], buffer[2]);
+													buffer[0], buffer[1], buffer[2]);
 
 						// Scaling Factor to get Pascals
 						// Datasheet: 2. Electrical Specifications

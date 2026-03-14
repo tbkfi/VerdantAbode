@@ -15,12 +15,12 @@ static TickType_t last_input = 0;
 
 
 void LOCAL_INPUTS::isr(uint gpio, uint32_t events) {
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
-    TickType_t now = xTaskGetTickCountFromISR();
+	TickType_t now = xTaskGetTickCountFromISR();
 	if (events & GPIO_IRQ_EDGE_RISE) {
 	// Avoid phantom triggers on release
-        last_input = now;
+		last_input = now;
 	}
 	else if (events & GPIO_IRQ_EDGE_FALL) {
 	// Inputs only on falling edge
@@ -45,7 +45,7 @@ void LOCAL_INPUTS::isr(uint gpio, uint32_t events) {
 			xQueueSendFromISR(que, &e, &xHigherPriorityTaskWoken);
 		}
 	}
-    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
 QueueHandle_t LOCAL_INPUTS::create(void) {

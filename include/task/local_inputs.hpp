@@ -43,4 +43,3 @@ namespace LOCAL_INPUTS {
 
 	QueueHandle_t create(void);
 }
-

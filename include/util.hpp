@@ -18,6 +18,11 @@
 #include "system.hpp"
 
 
+// This file, ideally, shouldn't exist. Instead its contents
+// should be integrated into their own sensible definition/implementations.
+//
+// It effectively exists for quick testing, hacks, and small utility funcs.
+//
 void init_i2c0(void);
 void init_i2c1(void);
 
@@ -33,5 +38,3 @@ int split_u32_to_8(uint32_t src, uint8_t *dst, int pos);
 int split_u16_to_8(uint16_t src, uint8_t *dst, int pos);
 uint32_t merge_u32_from_8(uint8_t *src, int *pos);
 uint16_t merge_u16_from_8(uint8_t *src, int *pos);
-
-

@@ -10,7 +10,7 @@
 static void callback_httpc_result(void *arg, httpc_result_t httpc_result, u32_t rx_content_len, u32_t srv_res, err_t err) {
 // Fires on: HTTP Result
 	if (WIFI_SEND::DEBUG) {
-		printf("[WIFI_SEND] (http_cb): lwip (%d), http (%d)\n", httpc_result, srv_res);
+		printf("[WIFI_SEND] (http_cb): lwip (%d), http (%lu)\n", httpc_result, srv_res);
 	}
 }
 

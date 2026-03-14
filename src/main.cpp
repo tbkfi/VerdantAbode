@@ -52,13 +52,13 @@ int main() {
 	system.display = std::make_shared<ssd1306>(system.i2c_dev);
 	
 	// TASK creation
-	BLINKY::create_task();
-	PARSER::create_task(&system);
-	CONTROLLER::create_task(&system);
-	OLED::create_task(&system);
-	VALVE::create_task(&system);
-	WIFI::create_task(&system);
-	WIFI_SEND::create_task(&system);
+	BLINKY::create_task();             // Are we alive?
+	PARSER::create_task(&system);      // Reads the collective system inputs, and dispatches actions.
+	CONTROLLER::create_task(&system);  // Controls CO2-level!
+	OLED::create_task(&system);        // Display-refresh.
+	VALVE::create_task(&system);       // Inlet for more CO2.
+	WIFI::create_task(&system);        // Handles WiFi authentication (+DHCP-lease), reconnections.
+	WIFI_SEND::create_task(&system);   // Periodic sending of WiFi data.
 	system.input_queue  = LOCAL_INPUTS::create();
 	system.sdp610_queue = SDP610::create_task(system.mutex_i2c);
 	system.gmp252_queue = GMP252::create_task(system.mutex_uart, system.rtu_client, system.uart);
@@ -66,5 +66,5 @@ int main() {
 	system.mio_queue    = FAN::create_task(system.mutex_uart, system.rtu_client, system.uart);
 
 	vTaskStartScheduler();
-    while(true);
+	while(true);
 }

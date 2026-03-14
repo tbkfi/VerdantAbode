@@ -49,6 +49,7 @@ void FAN::task(void *param) {
 }
 
 void FAN::set_speed(int speed_percentage, QueueHandle_t que) {
+// Tuomo Björk: Simpler no-ramp fan speed
 	FAN::QUE_ELEMENT e;
 	int one_pr = FAN::SPEED_MAX / 100;
 	e.time_ms = pdTICKS_TO_MS(xTaskGetTickCount());

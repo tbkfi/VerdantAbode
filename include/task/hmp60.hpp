@@ -43,7 +43,7 @@ namespace HMP60 {
 		std::shared_ptr<PicoUart> uart;
 		SemaphoreHandle_t mutex;
 		QueueHandle_t que;
-        QueueHandle_t que_rh;
+		QueueHandle_t que_rh;
 	};
 
 	struct QUE_ELEMENT {

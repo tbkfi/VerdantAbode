@@ -23,7 +23,6 @@ GMP252::create_task
 	vQueueAddToRegistry(ctx.que, "GMP252");
 	
 	xTaskCreate(GMP252::task, "GMP252", GMP252::STACK_DEPTH, (void *) &ctx, GMP252::TASK_PRIORITY, NULL);
-
 	return ctx.que;
 }
 

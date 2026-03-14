@@ -27,6 +27,7 @@ namespace WIFI_SEND {
 	constexpr TickType_t TASK_INTERVAL_MS = pdMS_TO_TICKS(30*1000);
 
 	constexpr const char* API_KEY = "ApiKeyHere";
+
 	void create_task(SYSTEM::DATA* ctx);
 	void task(void *param);
 }

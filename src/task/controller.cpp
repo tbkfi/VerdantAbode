@@ -17,13 +17,18 @@ void CONTROLLER::create_task(SYSTEM::DATA* ctx) {
 void CONTROLLER::task(void* param) {
 	SYSTEM::DATA* ctx = (SYSTEM::DATA*)param;
 
-	// Restore Controller settings
+	// Restore Controller settings on start
 	EEPROM::load(ctx);
 	
 	TickType_t last_wake = xTaskGetTickCount();
 	TickType_t interval = pdMS_TO_TICKS(CONTROLLER::POLL_MS);
 
 	while (true) {
+	/* The configuration below attempts to hold volume CO2 within a span of 'co2_target'.
+	 * Small modifications were done during the demo to correct the behaviour to actual
+	 * requirements, which turned out to be simpler. Those changes are not commited here,
+	 * but are trivial to change below.
+	*/
 		vTaskDelayUntil(&last_wake, interval);
 
 		if (ctx->val_co2 >= SYSTEM::CO2_CRITICAL) {
@@ -34,7 +39,7 @@ void CONTROLLER::task(void* param) {
 		else if (ctx->val_co2 > (ctx->co2_target + SYSTEM::CO2_SPAN)) {
 		// CO2 above target
 			VALVE::open(false, ctx);
-			if (ctx->mio_queue != nullptr) FAN::set_speed(CONTROLLER::PR_FLUSH_CRIT, ctx->mio_queue);
+			if (ctx->mio_queue != nullptr) FAN::set_speed(CONTROLLER::PR_FLUSH_NORM, ctx->mio_queue);
 		}
 		else if (ctx->val_co2 < (ctx->co2_target - SYSTEM::CO2_SPAN)) {
 		// CO2 below target

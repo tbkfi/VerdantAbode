@@ -2,7 +2,8 @@
 // https://www.nongnu.org/lwip/2_0_x/sockets_8h.html
 //
 // note: Honestly, I have no idea how many of these are neccessary.
-//       Some are more obvious than others, thought.
+//       Some are more obvious than others, and some were copied
+//       from the internet with a prayer.
 // 
 #ifndef _LWIPOPTS_H
 #define _LWIPOPTS_H

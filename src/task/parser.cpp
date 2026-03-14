@@ -37,8 +37,8 @@ void PARSER::task(void* param) {
 		if (ctx->input_queue != nullptr && xQueueReceive(ctx->input_queue, &e_local_input, 0) == pdTRUE) {
 		// Local inputs
 			if (flags & SYSTEM::FLAG_WIFI_SETUP) action_local_input_wifi_setup(ctx, &e_local_input);
+			//else if () ; // other views?
 			else action_local_input_regular(ctx, &e_local_input);
-			//action_local_input_regular(ctx, &e_local_input);
 		}
 
 		if (ctx->sdp610_queue != nullptr && xQueueReceive(ctx->sdp610_queue, &e_sdp610, 0) == pdTRUE) {

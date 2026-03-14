@@ -54,6 +54,7 @@ bool EEPROM::load(SYSTEM::DATA* ctx) {
 	}
 
 	// CRC
+	// note: compare directly | -= eq. 0
 	size_t data_len = sizeof(EEPROM::TABLE) - sizeof(uint16_t);
 	uint16_t crc = crc16((uint8_t*) &data, data_len);
 	if (crc != data.crc) {

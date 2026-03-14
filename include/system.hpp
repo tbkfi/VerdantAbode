@@ -37,15 +37,13 @@ namespace SYSTEM {
 	constexpr uint16_t CO2_INCR  = 5;       // Delta per ctrl increment
 	constexpr uint16_t CO2_CRITICAL = 2000; // Critical CO2 limit
 
-	constexpr uint8_t SSID_BUFF_LEN = 32;
-
 	// Event flags
-	constexpr EventBits_t FLAG_CO2_HIGH       = ( 1 << 0 );  // Indicates high CO2
-	constexpr EventBits_t FLAG_CO2_LOW        = ( 1 << 1 );  // Indicates low CO2
-	constexpr EventBits_t FLAG_WIFI_SETUP     = ( 1 << 2 );  // WIFI setup screen?
-	constexpr EventBits_t FLAG_WIFI_PFIELD    = ( 1 << 3 );  // Pass-field selected?
-	constexpr EventBits_t FLAG_WIFI_CONNECTED = ( 1 << 4 );  // Wifi connetion status
-	constexpr EventBits_t FLAG_VALVE_OPEN     = ( 1 << 5 );  // CO2 valve is open
+	constexpr EventBits_t FLAG_CO2_HIGH         = ( 1 << 0 );  // Indicates high CO2
+	constexpr EventBits_t FLAG_CO2_LOW          = ( 1 << 1 );  // Indicates low CO2
+	constexpr EventBits_t FLAG_WIFI_SETUP       = ( 1 << 2 );  // WIFI setup screen?
+	constexpr EventBits_t FLAG_WIFI_PFIELD      = ( 1 << 3 );  // Pass-field selected?
+	constexpr EventBits_t FLAG_WIFI_CONNECTED   = ( 1 << 4 );  // Wifi connetion status
+	constexpr EventBits_t FLAG_VALVE_OPEN       = ( 1 << 5 );  // CO2 valve is open
 	constexpr EventBits_t FLAG_WIFI_SETUP_READY = ( 1 << 6 );  // Wifi ready for connect 
 
 	// Uart & Modbus
@@ -54,6 +52,9 @@ namespace SYSTEM {
 	constexpr uint8_t  UART_RX_PIN    = 5;
 	constexpr uint16_t UART_BAUD_RATE = 9600;
 	constexpr uint8_t  STOP_BITS      = 2;
+
+
+	constexpr uint8_t SSID_BUFF_LEN = 32;
 
 	struct DATA {
 	// System State
@@ -109,6 +110,7 @@ namespace SYSTEM {
 	};
 
 	// usage SYSTEM::VIEW::WIFI_SETUP
+	// TODO: encapsulate into the wifi_setup action-view.
 	namespace VIEW {
 		const unsigned MAIN = 0;
 		const unsigned WIFI_SETUP = 1;
