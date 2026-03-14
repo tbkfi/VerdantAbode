@@ -11,7 +11,7 @@ environment.
 
 The obtained sensor data is used to actuate a 10V (max) fan connected to the
 Produal MIO I/O module to bring CO2-levels down when required. Levels are increased with
-a CO2-injection, which is actuated with a GPIO-signal when the PPMs fall below threshold.
+a CO2-injection valve, which is actuated with a GPIO-signal when the PPMs fall below threshold.
 
 ```
 # Actuators
@@ -53,6 +53,35 @@ respectively.
 The parser will dispatch actions to implementations in `/src/action` directory. Many of which
 signal the system by using the `system.events` event group, whose flags are defined in system.hpp
 (`SYSTEM::FLAG_CO2_HIGH`, E.g.).
+
+### Network Connectivity
+
+The system supports networking via LwIP, and can be connected to a WiFi network by using
+the screen and local input buttons to enter the SSID and its password. The screen indicates
+the status of network connection. This network connectivity is used to send system
+data (sensor values, actuator status) to ThingSpeak at defined intervals (30s by default).
+
+![Wi-Fi local setup screen](doc/wifi_setup.jpg)
+
+The rotary encoder moves along the currently active row of characters to choose from.
+Button 1 will change the currently displayed and selectable row of characters, allowing the
+user to cycle through a list of sensible characters to input into the SSID and PASS fields.
+A special row of characters exist where the following key-functionality mapping exists:
+
+```
+< : delete current character
+% : reset currently active field
+N : change active field to the next one
++ : initiate wifi handshake
+```
+
+When the device has successfully connected to a network, it will request a DHCP lease to
+obtain an IP. The `wifi_send.cpp` implementation and its definition define the API-path
+and data fields which are to be sent. DNS is supported for name resolution through LwIP.
+
+While callbacks for HTTP Headers, Body, and Result are implemented, the talkback queue
+functionality via ThingSpeak is not. Mbed-TLS initialisation remains unfinished, so the
+current data transmission is insecure and should only be used in development.
 
 ## Building
 
